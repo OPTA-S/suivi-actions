@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi des actions — CODIR Groupe</title>
+<style>
+  :root {
+    color-scheme: light;
+    --navy: #142E4F;
+    --turquoise: #00A7B5;
+    --ardoise: #8CA0AF;
+    --orange: #F39C12;
+    --bg: #F6F8FA;
+    --card: #FFFFFF;
+    --border: #E3E9EF;
+    --red: #D64541;
+    --green: #27865B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--navy); padding: 24px; font-size: 14px;
+    max-width: 1050px; margin: 0 auto;
+  }
+  header { margin-bottom: 12px; }
+  .brand { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .brand h1 { font-size: 24px; letter-spacing: 2px; }
+  .brand .baseline { font-size: 11px; color: var(--ardoise); letter-spacing: 1px; text-transform: uppercase; }
+  .toolbar { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; align-items: center; }
+  #sync {
+    font-size: 11.5px; color: var(--ardoise); margin-left: auto; display: flex; align-items: center; gap: 6px;
+  }
+  #sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
+  #sync.err .dot { background: var(--red); }
+  #sync.busy .dot { background: var(--orange); }
+  button {
+    font-size: 12.5px; padding: 7px 13px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--card); color: var(--navy); cursor: pointer; font-weight: 600;
+  }
+  button:hover { border-color: var(--turquoise); }
+  button.primary { background: var(--turquoise); color: #fff; border-color: var(--turquoise); }
+  button.small { padding: 2px 7px; font-size: 12px; font-weight: 500; border-radius: 5px; }
+  button.danger { color: var(--red); }
+  .hint { font-size: 11.5px; color: var(--ardoise); margin: -6px 0 10px; }
+  .banner {
+    display: none; margin: 10px 0; padding: 8px 12px; border-radius: 8px;
+    background: #FDECEA; color: #94322d; border: 1px solid #F3C6C0; font-size: 12px;
+  }
+  .stats { display: flex; gap: 12px; margin: 14px 0; flex-wrap: wrap; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; min-width: 100px; }
+  .stat .num { font-size: 22px; font-weight: 700; }
+  .stat .lbl { font-size: 11px; color: var(--ardoise); text-transform: uppercase; letter-spacing: .5px; }
+  .stat.late .num { color: var(--red); }
+  .stat.done .num { color: var(--green); }
+  .progress-wrap { flex: 1; min-width: 180px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; display: flex; flex-direction: column; justify-content: center; }
+  .progress-bar { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; background: var(--turquoise); transition: width .4s; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tab {
+    padding: 8px 16px; border-radius: 8px 8px 0 0; cursor: pointer; border: 1px solid var(--border);
+    border-bottom: none; background: #EDF1F5; font-weight: 600; font-size: 13px; color: var(--ardoise);
+  }
+  .tab.active { background: var(--card); color: var(--navy); border-top: 3px solid var(--turquoise); }
+  .view { display: none; }
+  .view.active { display: block; }
+  .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .col { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px; min-height: 160px; transition: background .15s, border-color .15s; }
+  .col.dragover { background: #EAF6F7; border-color: var(--turquoise); border-style: dashed; }
+  .col h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; }
+  .col.backlog h3 { border-color: var(--turquoise); }
+  .col.todo h3 { border-color: var(--ardoise); }
+  .col.doing h3 { border-color: var(--orange); }
+  .col.done h3 { border-color: var(--green); }
+  .group { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .group h3 { font-size: 13px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--turquoise); }
+  .group.late h3 { border-color: var(--red); color: var(--red); }
+  .card {
+    background: #FBFCFD; border: 1px solid var(--border); border-left: 4px solid var(--ardoise);
+    border-radius: 8px; padding: 10px; margin-bottom: 8px; position: relative;
+  }
+  .card[draggable="true"] { cursor: grab; }
+  .card.dragging { opacity: .4; }
+  .card.s-backlog { border-left-color: var(--turquoise); border-left-style: dashed; }
+  .card.s-doing { border-left-color: var(--orange); }
+  .card.s-done { border-left-color: var(--green); }
+  .card.s-done .title { text-decoration: line-through; opacity: .6; }
+  .card .title { font-weight: 600; font-size: 13px; margin-bottom: 5px; padding-right: 56px; }
+  .card .meta { font-size: 11.5px; color: var(--ardoise); display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 7px; }
+  .card .meta .late-flag { color: var(--red); font-weight: 700; }
+  .card .row { display: flex; gap: 6px; align-items: center; }
+  .card select { padding: 3px 6px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--navy); }
+  .card input.note { flex: 1; padding: 3px 8px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--navy); }
+  .card .actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+  .empty { color: var(--ardoise); font-size: 12px; font-style: italic; padding: 6px; }
+  footer { margin-top: 20px; font-size: 11px; color: var(--ardoise); border-top: 1px solid var(--border); padding-top: 10px; }
+  .overlay {
+    display: none; position: fixed; inset: 0; background: rgba(20, 46, 79, .45); z-index: 50;
+    align-items: flex-start; justify-content: center; padding: 40px 16px;
+  }
+  .overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 520px; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+  .modal h3 { margin-bottom: 14px; font-size: 15px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-grid label { font-size: 11px; color: var(--ardoise); display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: .5px; }
+  .form-grid input, .form-grid select {
+    width: 100%; font-size: 13px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 8px;
+    background: #fff; color: var(--navy); font-family: inherit;
+  }
+  .form-actions { margin-top: 16px; display: flex; gap: 8px; justify-content: flex-end; }
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--navy); color: #fff;
+    padding: 9px 18px; border-radius: 8px; font-size: 12.5px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 60;
+  }
+  .toast.show { opacity: 1; }
+  @media (max-width: 950px) { .kanban { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .kanban, .form-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>CODIR GROUPE</h1>
+    <span class="baseline">Suivi des actions &amp; sujets</span>
+  </div>
+</header>
+
+<div class="toolbar">
+  <button class="primary" onclick="openForm()">➕ Nouvelle action</button>
+  <button onclick="openForm(null, 'backlog')">💡 Nouveau sujet (backlog)</button>
+  <span id="sync"><span class="dot"></span><span id="sync-txt">Connexion…</span></span>
+</div>
+<div class="hint">💡 Glissez-déposez les cartes entre les colonnes. Le backlog accueille les sujets à discuter en réunion : glissez un sujet vers « À faire » quand il devient une action. Toutes les modifications sont enregistrées sur le serveur et partagées avec l'équipe.</div>
+
+<div class="banner" id="banner"></div>
+
+<div class="stats">
+  <div class="stat"><div class="num" id="st-backlog" style="color:var(--turquoise)">–</div><div class="lbl">Backlog</div></div>
+  <div class="stat"><div class="num" id="st-total">–</div><div class="lbl">Actions</div></div>
+  <div class="stat done"><div class="num" id="st-done">–</div><div class="lbl">Terminées</div></div>
+  <div class="stat late"><div class="num" id="st-late">–</div><div class="lbl">En retard</div></div>
+  <div class="progress-wrap">
+    <div class="lbl">Avancement <span id="st-pct"></span></div>
+    <div class="progress-bar"><div class="progress-fill" id="st-fill" style="width:0"></div></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-view="statut">Par statut</div>
+  <div class="tab" data-view="echeance">Par échéance</div>
+  <div class="tab" data-view="responsable">Par responsable</div>
+</div>
+
+<div class="view active" id="view-statut">
+  <div class="kanban">
+    <div class="col backlog" data-status="backlog"><h3>💡 Backlog <span id="c-backlog"></span></h3><div id="col-backlog"></div></div>
+    <div class="col todo" data-status="todo"><h3>À faire <span id="c-todo"></span></h3><div id="col-todo"></div></div>
+    <div class="col doing" data-status="doing"><h3>En cours <span id="c-doing"></span></h3><div id="col-doing"></div></div>
+    <div class="col done" data-status="done"><h3>Terminé <span id="c-done"></span></h3><div id="col-done"></div></div>
+  </div>
+</div>
+<div class="view" id="view-echeance"></div>
+<div class="view" id="view-responsable"></div>
+
+<footer>
+  Tableau partagé : les modifications de chacun sont enregistrées sur le serveur et se synchronisent automatiquement (quelques secondes).
+</footer>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="form-title">Nouvelle action</h3>
+    <div class="form-grid">
+      <div class="full"><label>Action *</label><input id="f-action" placeholder="Intitulé de l'action"></div>
+      <div><label>Pilote / responsable</label><input id="f-pilote" placeholder="Ex. : Direction / RH"></div>
+      <div><label>Échéance</label><input id="f-echeance" placeholder="Ex. : Septembre 2026, 15/10/2026, Fin 2026…"></div>
+      <div><label>Statut</label>
+        <select id="f-status">
+          <option value="backlog">💡 Backlog (sujet à discuter)</option>
+          <option value="todo">À faire</option>
+          <option value="doing">En cours</option>
+          <option value="done">Terminé</option>
+        </select>
+      </div>
+      <div><label>Note</label><input id="f-note" placeholder="Optionnel"></div>
+    </div>
+    <div class="form-actions">
+      <button onclick="closeForm()">Annuler</button>
+      <button class="primary" onclick="saveForm()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://ozdeuwqrhwgoiibuqbab.supabase.co';
+const SB_KEY = 'sb_publishable_WW8QFBWRuXITFqPy_7h5NQ_G8qfYity';
+const TRACKER_ID = 'codir';
+const REST = SB_URL + '/rest/v1/trackers';
+const HEADERS = { apikey: SB_KEY, 'Content-Type': 'application/json' };
+const DOC_DATE = new Date(2026, 4, 8);
+const MONTHS = { janvier:0, 'février':1, fevrier:1, mars:2, avril:3, mai:4, juin:5, juillet:6, 'août':7, aout:7, septembre:8, octobre:9, novembre:10, 'décembre':11, decembre:11 };
+const STATUS_LBL = { backlog: 'Backlog', todo: 'À faire', doing: 'En cours', done: 'Terminé' };
+
+let DATA = { actions: [] };
+let lastServer = null;   // updated_at serveur connu
+let dirty = false;       // modifications locales non enregistrées
+let saving = false;
+let saveTimer = null;
+
+function esc(s) { return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+function uid() { return 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function setSync(mode, txt) {
+  const el = document.getElementById('sync');
+  el.className = mode;
+  document.getElementById('sync-txt').textContent = txt;
+}
+function showBanner(msg) { const b = document.getElementById('banner'); b.textContent = msg; b.style.display = 'block'; }
+function hideBanner() { document.getElementById('banner').style.display = 'none'; }
+
+function parseEcheance(e) {
+  if (!e) return null;
+  const t = String(e).toLowerCase().trim();
+  let m;
+  if ((m = t.match(/(\d{4})-(\d{2})-(\d{2})/))) return new Date(+m[1], +m[2] - 1, +m[3]);
+  if ((m = t.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/))) return new Date(+m[3], +m[2] - 1, +m[1]);
+  if ((m = t.match(/(?:1er\s+)?([a-zéèûôà]+)\s+(20\d\d)/)) && MONTHS[m[1]] !== undefined) {
+    const first = /(^|\s)1er\s/.test(t);
+    return new Date(+m[2], MONTHS[m[1]] + (first ? 0 : 1), first ? 1 : 0);
+  }
+  if ((m = t.match(/t([1-4])\s*(20\d\d)/))) return new Date(+m[2], +m[1] * 3, 0);
+  if ((m = t.match(/fin\s+(20\d\d)/))) return new Date(+m[1], 11, 31);
+  if ((m = t.match(/courant\s+(20\d\d)/))) return new Date(+m[1], 11, 31);
+  if ((m = t.match(/(\d+)\s+jours/))) return new Date(DOC_DATE.getTime() + (+m[1]) * 86400000);
+  return null;
+}
+
+// ---------- serveur ----------
+async function apiGet() {
+  const r = await fetch(REST + '?id=eq.' + TRACKER_ID + '&select=data,updated_at', { headers: HEADERS });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  if (!j.length) throw new Error('tableau introuvable');
+  return j[0];
+}
+function markDirty() {
+  dirty = true;
+  setSync('busy', 'Enregistrement…');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(doSave, 700);
+}
+async function doSave() {
+  if (saving) { saveTimer = setTimeout(doSave, 500); return; }
+  saving = true;
+  const now = new Date().toISOString();
+  try {
+    const r = await fetch(REST + '?id=eq.' + TRACKER_ID, {
+      method: 'PATCH', headers: HEADERS,
+      body: JSON.stringify({ data: DATA, updated_at: now })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    lastServer = now; dirty = false; hideBanner();
+    setSync('', 'Synchronisé · ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+  } catch (e) {
+    setSync('err', 'Hors ligne — nouvelle tentative…');
+    showBanner('Enregistrement impossible (' + e.message + '). Nouvelle tentative automatique…');
+    saveTimer = setTimeout(doSave, 4000);
+  }
+  saving = false;
+}
+function editingInProgress() {
+  const a = document.activeElement;
+  return document.getElementById('overlay').classList.contains('open') ||
+         (a && (a.tagName === 'INPUT' || a.tagName === 'SELECT' || a.tagName === 'TEXTAREA'));
+}
+async function poll() {
+  if (dirty || saving || editingInProgress()) return;
+  try {
+    const row = await apiGet();
+    if (row.updated_at !== lastServer) {
+      DATA = row.data || { actions: [] };
+      lastServer = row.updated_at;
+      refresh();
+    }
+    setSync('', 'Synchronisé · ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+    hideBanner();
+  } catch (e) {
+    setSync('err', 'Connexion perdue');
+  }
+}
+
+// ---------- actions ----------
+function enriched() {
+  const today = new Date();
+  return (DATA.actions || []).map(a => {
+    const d = parseEcheance(a.echeance);
+    return { ...a, d, late: !!(d && d < today && a.status !== 'done' && a.status !== 'backlog') };
+  });
+}
+function find(id) { return (DATA.actions || []).find(x => x.id === id); }
+function setStatus(id, status) { const a = find(id); if (a) { a.status = status; markDirty(); refresh(); } }
+function setNote(id, note) { const a = find(id); if (a) { a.note = note; markDirty(); } }
+function removeAction(id) {
+  DATA.actions = (DATA.actions || []).filter(x => x.id !== id);
+  markDirty(); refresh(); toast('Action supprimée');
+}
+
+let editingId = null;
+function openForm(id, preset) {
+  editingId = id || null;
+  const a = id ? find(id) : null;
+  document.getElementById('form-title').textContent = a ? 'Modifier' : (preset === 'backlog' ? 'Nouveau sujet à discuter' : 'Nouvelle action');
+  document.getElementById('f-action').value = a ? a.action : '';
+  document.getElementById('f-pilote').value = a ? a.pilote : '';
+  document.getElementById('f-echeance').value = a ? a.echeance : '';
+  document.getElementById('f-status').value = a ? a.status : (preset || 'todo');
+  document.getElementById('f-note').value = a ? a.note : '';
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(() => document.getElementById('f-action').focus(), 50);
+}
+function closeForm() { document.getElementById('overlay').classList.remove('open'); editingId = null; }
+function saveForm() {
+  const v = {
+    action: document.getElementById('f-action').value.trim(),
+    pilote: document.getElementById('f-pilote').value.trim() || '—',
+    echeance: document.getElementById('f-echeance').value.trim(),
+    status: document.getElementById('f-status').value,
+    note: document.getElementById('f-note').value.trim()
+  };
+  if (!v.action) { alert('L\'intitulé est obligatoire.'); return; }
+  if (editingId) { Object.assign(find(editingId), v); toast('Action modifiée'); }
+  else { (DATA.actions = DATA.actions || []).push({ id: uid(), ...v }); toast('Ajouté'); }
+  markDirty(); closeForm(); refresh();
+}
+
+// ---------- drag & drop ----------
+let dragId = null;
+function onDragStart(ev, id) {
+  dragId = id;
+  ev.dataTransfer.setData('text/plain', id);
+  ev.dataTransfer.effectAllowed = 'move';
+  ev.target.classList.add('dragging');
+}
+function onDragEnd(ev) { ev.target.classList.remove('dragging'); dragId = null; }
+function wireColumns() {
+  document.querySelectorAll('.col[data-status]').forEach(col => {
+    col.addEventListener('dragover', ev => { ev.preventDefault(); ev.dataTransfer.dropEffect = 'move'; col.classList.add('dragover'); });
+    col.addEventListener('dragleave', () => col.classList.remove('dragover'));
+    col.addEventListener('drop', ev => {
+      ev.preventDefault(); col.classList.remove('dragover');
+      const id = ev.dataTransfer.getData('text/plain') || dragId;
+      if (id) setStatus(id, col.dataset.status);
+    });
+  });
+}
+
+// ---------- rendu ----------
+function cardHTML(a, draggable) {
+  const dateStr = a.d ? a.d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
+  return `<div class="card s-${a.status}" ${draggable ? `draggable="true" ondragstart="onDragStart(event,'${a.id}')" ondragend="onDragEnd(event)"` : ''}>
+    <div class="actions">
+      <button class="small" title="Modifier tous les champs" onclick="openForm('${a.id}')">✏️</button>
+      <button class="small danger" title="Supprimer" onclick="if(confirm('Supprimer cette action ?'))removeAction('${a.id}')">🗑</button>
+    </div>
+    <div class="title">${esc(a.action)}</div>
+    <div class="meta">
+      <span>👤 ${esc(a.pilote)}</span>
+      ${a.echeance ? `<span>📅 ${esc(a.echeance)}${dateStr ? ' (' + dateStr + ')' : ''}</span>` : ''}
+      ${a.late ? '<span class="late-flag">⚠ En retard</span>' : ''}
+    </div>
+    <div class="row">
+      <select onchange="setStatus('${a.id}', this.value)">
+        <option value="backlog" ${a.status === 'backlog' ? 'selected' : ''}>💡 Backlog</option>
+        <option value="todo" ${a.status === 'todo' ? 'selected' : ''}>À faire</option>
+        <option value="doing" ${a.status === 'doing' ? 'selected' : ''}>En cours</option>
+        <option value="done" ${a.status === 'done' ? 'selected' : ''}>Terminé</option>
+      </select>
+      <input class="note" placeholder="Note…" value="${esc(a.note)}" onchange="setNote('${a.id}', this.value)">
+    </div>
+  </div>`;
+}
+
+function refresh() {
+  const list = enriched();
+  const actionable = list.filter(a => a.status !== 'backlog');
+  const backlogItems = list.filter(a => a.status === 'backlog');
+  const done = actionable.filter(a => a.status === 'done').length;
+  const late = actionable.filter(a => a.late).length;
+  document.getElementById('st-backlog').textContent = backlogItems.length;
+  document.getElementById('st-total').textContent = actionable.length;
+  document.getElementById('st-done').textContent = done;
+  document.getElementById('st-late').textContent = late;
+  const pct = actionable.length ? Math.round(done / actionable.length * 100) : 0;
+  document.getElementById('st-pct').textContent = pct + ' %';
+  document.getElementById('st-fill').style.width = pct + '%';
+  for (const s of ['backlog', 'todo', 'doing', 'done']) {
+    const items = list.filter(a => a.status === s);
+    document.getElementById('col-' + s).innerHTML = items.map(a => cardHTML(a, true)).join('') || '<div class="empty">Déposez une carte ici</div>';
+    document.getElementById('c-' + s).textContent = items.length;
+  }
+  const now = new Date(), in60 = new Date(now.getTime() + 60 * 86400000);
+  const buckets = [
+    ['⚠ En retard', a => a.late, true],
+    ['Sous 60 jours', a => a.d && !a.late && a.d <= in60 && a.status !== 'done', false],
+    ['Plus tard', a => a.d && a.d > in60 && a.status !== 'done', false],
+    ['Sans échéance datée', a => !a.d && a.status !== 'done', false],
+    ['Terminées', a => a.status === 'done', false]
+  ];
+  const backlogGroup = backlogItems.length
+    ? `<div class="group"><h3>💡 Backlog — sujets à discuter (${backlogItems.length})</h3>${backlogItems.map(a => cardHTML(a, false)).join('')}</div>`
+    : '';
+  document.getElementById('view-echeance').innerHTML = buckets.map(([lbl, fn, isLate]) => {
+    const items = actionable.filter(fn).sort((x, y) => (x.d || Infinity) - (y.d || Infinity));
+    if (!items.length) return '';
+    return `<div class="group${isLate ? ' late' : ''}"><h3>${lbl} (${items.length})</h3>${items.map(a => cardHTML(a, false)).join('')}</div>`;
+  }).join('') + backlogGroup || '<div class="empty">Rien à afficher</div>';
+  const byPil = {};
+  for (const a of list) (byPil[a.pilote] = byPil[a.pilote] || []).push(a);
+  document.getElementById('view-responsable').innerHTML = Object.keys(byPil).sort().map(p => {
+    const items = byPil[p];
+    const d = items.filter(a => a.status === 'done').length;
+    return `<div class="group"><h3>${esc(p)} — ${d}/${items.length} terminée(s)</h3>${items.map(a => cardHTML(a, false)).join('')}</div>`;
+  }).join('');
+}
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('view-' + t.dataset.view).classList.add('active');
+}));
+document.getElementById('overlay').addEventListener('click', ev => { if (ev.target.id === 'overlay') closeForm(); });
+
+async function init() {
+  wireColumns();
+  try {
+    const row = await apiGet();
+    DATA = row.data || { actions: [] };
+    lastServer = row.updated_at;
+    refresh();
+    setSync('', 'Synchronisé');
+  } catch (e) {
+    setSync('err', 'Connexion impossible');
+    showBanner('Impossible de charger les données (' + e.message + '). Vérifiez votre connexion puis rechargez la page.');
+  }
+  setInterval(poll, 4000);
+}
+init();
+</script>
+</body>
+</html>
