@@ -173,7 +173,10 @@
     <div class="form-grid">
       <div class="full"><label>Action *</label><input id="f-action" placeholder="Intitulé de l'action"></div>
       <div><label>Pilote / responsable</label><input id="f-pilote" placeholder="Ex. : Direction / RH"></div>
-      <div><label>Échéance</label><input id="f-echeance" placeholder="Ex. : Septembre 2026, 15/10/2026, Fin 2026…"></div>
+      <div><label>Échéance 📅</label>
+        <input type="date" id="f-date" onchange="pickDate(this.value)">
+        <input id="f-echeance" placeholder="ou texte libre : Fin 2026, T3 2026…" style="margin-top:6px;">
+      </div>
       <div><label>Statut</label>
         <select id="f-status">
           <option value="backlog">💡 Backlog (sujet à discuter)</option>
@@ -311,6 +314,9 @@ function removeAction(id) {
   markDirty(); refresh(); toast('Action supprimée');
 }
 
+function pickDate(v) {
+  if (v) { const [y, m, d] = v.split('-'); document.getElementById('f-echeance').value = d + '/' + m + '/' + y; }
+}
 let editingId = null;
 function openForm(id, preset) {
   editingId = id || null;
@@ -319,6 +325,8 @@ function openForm(id, preset) {
   document.getElementById('f-action').value = a ? a.action : '';
   document.getElementById('f-pilote').value = a ? a.pilote : '';
   document.getElementById('f-echeance').value = a ? a.echeance : '';
+  const dte = a ? parseEcheance(a.echeance) : null;
+  document.getElementById('f-date').value = dte ? (dte.getFullYear() + '-' + String(dte.getMonth() + 1).padStart(2, '0') + '-' + String(dte.getDate()).padStart(2, '0')) : '';
   document.getElementById('f-status').value = a ? a.status : (preset || 'todo');
   document.getElementById('f-note').value = a ? a.note : '';
   document.getElementById('overlay').classList.add('open');
