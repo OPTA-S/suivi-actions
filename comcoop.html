@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portail pilotage groupe — Franchise ComCoop & offre immersive</title>
+<style>
+:root{
+  --marine:#002D69; --orange:#FF6600; --gris:#3C3C3C; --gris-clair:#999999;
+  --serie1:#1B4F91; --serie2:#E35205; --grid:#E6E8EC; --surface:#FCFCFB;
+  --encadre:#F4F5F7; --bleu-pale:#A4BBD8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--gris);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+.wrap{max-width:980px;margin:0 auto;padding:0 28px 90px}
+h1,h2,h3,h4,.nar{font-family:"Arial Narrow",Arial,sans-serif}
+header.hero{border-bottom:3px solid var(--orange);padding:46px 0 26px;margin-bottom:34px}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);font-weight:700;margin:0 0 10px}
+h1{font-size:40px;line-height:1.12;color:var(--marine);margin:0 0 12px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--gris-clair);font-size:15px;margin:0}
+h2{font-size:27px;color:var(--marine);margin:56px 0 6px;font-weight:700;letter-spacing:-.005em;
+   padding-top:22px;border-top:1px solid var(--grid)}
+h2 .num{color:var(--orange);font-size:15px;display:block;letter-spacing:.14em;margin-bottom:6px;text-transform:uppercase}
+h3{font-size:19px;color:var(--orange);margin:34px 0 8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+h4{font-size:16px;color:var(--marine);margin:24px 0 6px;font-weight:700}
+p{margin:0 0 15px}
+strong{color:var(--marine);font-weight:700}
+em.src{font-style:normal;color:var(--gris-clair);font-size:13px}
+a{color:var(--serie1)}
+.lede{font-size:18px;line-height:1.6;color:var(--gris)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin:26px 0 6px}
+.tile{border:1px solid var(--grid);border-left:3px solid var(--orange);padding:15px 16px;background:#fff;border-radius:3px}
+.tile .v{font-family:"Arial Narrow",Arial,sans-serif;font-size:30px;font-weight:700;color:var(--marine);line-height:1.05}
+.tile .l{font-size:12.5px;color:var(--gris-clair);margin-top:5px;line-height:1.35}
+.tile.warn{border-left-color:var(--serie2)}
+.tile.ok{border-left-color:var(--serie1)}
+figure{margin:26px 0 8px;border:1px solid var(--grid);background:#fff;border-radius:3px;padding:18px 18px 10px}
+figcaption{font-size:13px;color:var(--gris-clair);margin-top:10px;line-height:1.45;border-top:1px solid var(--grid);padding-top:9px}
+.figtitle{font-family:"Arial Narrow",Arial,sans-serif;font-size:17px;font-weight:700;color:var(--marine);margin:0 0 2px}
+.figsub{font-size:13px;color:var(--gris-clair);margin:0 0 14px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--gris);margin:0 0 12px}
+.legend i{width:11px;height:11px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
+.box{background:var(--encadre);border-left:3px solid var(--marine);padding:16px 20px;margin:24px 0;border-radius:0 3px 3px 0}
+.box.alert{border-left-color:var(--serie2);background:#FDF3EE}
+.box p:last-child{margin-bottom:0}
+.box .t{font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;color:var(--marine);font-size:15px;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:20px 0}
+th{text-align:left;font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;text-transform:uppercase;
+   letter-spacing:.05em;color:var(--marine);border-bottom:2px solid var(--marine);padding:8px 10px 7px}
+td{padding:8px 10px;border-bottom:1px solid var(--grid)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr:hover td{background:#FAFBFC}
+.tag{display:inline-block;font-size:11.5px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:.03em}
+.tag.up{background:#E8F0F9;color:var(--serie1)} .tag.down{background:#FBEAE2;color:var(--serie2)}
+.tag.flat{background:#F0F1F3;color:var(--gris-clair)}
+ol.axes{list-style:none;counter-reset:ax;padding:0;margin:26px 0}
+ol.axes>li{counter-increment:ax;position:relative;padding:18px 0 18px 62px;border-bottom:1px solid var(--grid)}
+ol.axes>li::before{content:counter(ax);position:absolute;left:0;top:16px;width:42px;height:42px;border-radius:50%;
+  background:var(--marine);color:#fff;font-family:"Arial Narrow",Arial,sans-serif;font-size:21px;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+ol.axes>li .ax-t{font-family:"Arial Narrow",Arial,sans-serif;font-size:20px;font-weight:700;color:var(--marine);margin-bottom:2px}
+ol.axes>li .ax-m{font-size:12.5px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.tip{position:fixed;pointer-events:none;background:var(--marine);color:#fff;font-size:12.5px;padding:7px 10px;
+  border-radius:3px;opacity:0;transition:opacity .12s;z-index:99;line-height:1.45;white-space:nowrap}
+details{margin:14px 0;border:1px solid var(--grid);border-radius:3px;background:#fff}
+summary{cursor:pointer;padding:11px 15px;font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;
+  color:var(--marine);font-size:15px;text-transform:uppercase;letter-spacing:.04em}
+details[open] summary{border-bottom:1px solid var(--grid)}
+details .in{padding:4px 15px 12px}
+footer{margin-top:60px;padding-top:22px;border-top:3px solid var(--orange);font-size:13px;color:var(--gris-clair)}
+@media(max-width:640px){h1{font-size:30px}h2{font-size:22px}.wrap{padding:0 16px 60px}}
+
+.codirnav{background:#002D69;position:sticky;top:0;z-index:50}
+.codirnav .in{max-width:1050px;margin:0 auto;padding:0 28px;display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+.codirnav a{font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+  color:#A8BDD8;text-decoration:none;padding:11px 12px;font-weight:700;border-bottom:3px solid transparent}
+.codirnav a:hover{color:#fff}
+.codirnav a.home{color:#fff}
+.codirnav a.on{color:#fff;border-bottom-color:#FF6600}
+.codirnav a.suivi{margin-left:auto;color:#FF9B4D}
+.codirnav a.suivi:hover{color:#FF6600}
+@media(max-width:700px){.codirnav .in{padding:0 14px}.codirnav a{padding:9px 8px;font-size:12px}}
+</style>
+</head>
+<body>
+<nav class="codirnav"><div class="in"><a class="home" href="index.html">&#8962; CODIR</a><a href="diagnostic.html">Diagnostic</a><a href="prix-et-mix.html">Prix & mix</a><a href="produits.html">4 produits</a><a href="comcoop.html" class="on">ComCoop®</a><a href="benchmark.html">Benchmark</a><a class="suivi" href="codir.html">Suivi &#8599;</a></div></nav>
+<div class="tip" id="tip"></div>
+<div class="wrap">
+
+<header class="hero">
+  <p class="kicker">Portail pilotage groupe · Fiches produit</p>
+  <h1>ComCoop® sous licence<br>&amp; offre immersive</h1>
+  <p class="sub">Montage juridique, grille tarifaire, séquence de lancement — et le cadrage de l'offre immersive<br>
+  12 août 2026 · comparables et références juridiques sourcés · grille tarifaire à valider en CODIR</p>
+</header>
+
+<p class="lede">Deux chantiers liés : faire de <strong>ComCoop®</strong> un actif licenciable, et structurer une
+<strong>offre immersive</strong> qui échappe à la comparaison au prix jour. Le premier est contraint par un calendrier
+juridique — le dépôt de marque prend environ six mois. Le second est contraint par la preuve : ce qui est démontré est
+plus modeste que ce que vendent les éditeurs, et le dire est un avantage commercial.</p>
+
+<div class="tiles">
+  <div class="tile ok"><div class="v">4 500 €</div><div class="l">prix d'accréditation recommandé, entre MBTI (3 690 €) et Process Com (5 890 €)</div></div>
+  <div class="tile"><div class="v">90 €</div><div class="l">kit par participant — c'est là qu'est la rente, pas dans l'accréditation</div></div>
+  <div class="tile warn"><div class="v">20 j</div><div class="l">délai du document précontractuel dès qu'il y a la moindre exclusivité</div></div>
+  <div class="tile ok"><div class="v">g = 0,38</div><div class="l">effet mesuré de l'apprentissage immersif — 48 études contrôlées</div></div>
+  <div class="tile warn"><div class="v">0</div><div class="l">marché public de simulation managériale identifié en 2024-2026 : ça se vend en gré à gré</div></div>
+  <div class="tile ok"><div class="v">4 950 €</div><div class="l">équivalent jour de « L'Équipée » — 9 900 € pour deux jours</div></div>
+</div>
+
+<h2><span class="num">Partie A · 1</span>Le montage : commencez sans franchise, et sans exclusivité</h2>
+
+<p>Le réflexe serait de monter un réseau de formateurs indépendants sous licence territoriale. <strong>C'est le montage
+le plus risqué et le plus lent.</strong> Il y a une séquence bien meilleure, qui repose sur une distinction juridique
+précise.</p>
+
+<table>
+  <thead><tr><th>Marché</th><th>À qui l'on vend</th><th class="n">DIP obligatoire ?</th><th>Risque de requalification</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Phase 1 — Licence d'usage interne</strong></td><td>Aux organisations clientes, pour certifier
+      <em>leurs propres</em> formateurs internes. Aucune exclusivité territoriale, aucun réseau.</td>
+      <td class="n"><strong>Non</strong></td><td>Faible : pas de réitération commerciale, pas d'enseigne partagée</td></tr>
+    <tr><td>Phase 2 — Réseau de praticiens</td><td>À des formateurs indépendants ou à d'autres cabinets, avec territoires</td>
+      <td class="n"><strong>Oui</strong></td><td>Élevé : c'est une franchise, quel que soit le titre du contrat</td></tr>
+  </tbody>
+</table>
+
+<div class="box">
+  <div class="t">Pourquoi la phase 1 échappe au document précontractuel</div>
+  <p>L'article <strong>L330-3 du code de commerce</strong> ne vise pas la franchise mais un critère plus large : mettre
+  à disposition un nom commercial, une marque ou une enseigne <strong>en exigeant un engagement d'exclusivité ou de
+  quasi-exclusivité</strong>. Une CAF qui certifie quatre formateurs internes pour animer ComCoop® chez elle ne prend
+  aucun engagement d'exclusivité et n'exploite pas votre enseigne auprès de tiers. <strong>Pas d'exclusivité, pas de
+  DIP.</strong></p>
+  <p>Dès que vous accorderez un territoire à quelqu'un — même en « simple licence de marque » — l'obligation se
+  déclenche : document remis <strong>20 jours avant signature</strong>, avec vos comptes des deux derniers exercices,
+  l'état du réseau, les résiliations de l'année. Et il doit être <strong>actualisé jusqu'à la signature</strong> :
+  la Cour de cassation a retenu le 26 juin 2024 la réticence dolosive d'un franchiseur ayant tu un incident survenu
+  après la remise du DIP.</p>
+</div>
+
+<div class="box alert">
+  <div class="t">Le mot qui vous fait basculer en franchise</div>
+  <p>Dès qu'un contrat, une plaquette ou un support de recrutement mentionne un <strong>« savoir-faire »</strong>, un
+  <strong>« manuel opératoire »</strong>, une animation de réseau ou impose un outil propriétaire, les juges requalifient
+  en franchise — la cour d'appel de Toulouse l'a fait en 2017 sur ce faisceau exact. Et sans savoir-faire éprouvé,
+  la sanction n'est pas une amende : <strong>la cour d'appel de Chambéry a annulé les contrats</strong> le
+  3 octobre 2023.</p>
+  <p>En phase 1, parlez de <strong>licence d'utilisation d'un référentiel et de supports</strong>, jamais de savoir-faire.
+  En phase 2, assumez la franchise et faites-la rédiger.</p>
+</div>
+
+<h2><span class="num">Partie A · 2</span>La grille, calée sur les comparables publiés</h2>
+
+<p>Le modèle qui fonctionne pour une méthode n'est pas la redevance sur chiffre d'affaires — c'est
+<strong>accréditation payante + consommable récurrent</strong>. Les deux références françaises publiques :</p>
+
+<table>
+  <thead><tr><th>Référence</th><th class="n">Prix d'accréditation</th><th>Ce qui suit</th></tr></thead>
+  <tbody>
+    <tr><td>Process Communication Model (Kahler France)</td><td class="n"><strong>5 890 € HT</strong>, 133 h</td>
+      <td>contrat d'accréditation + règles d'usage du modèle</td></tr>
+    <tr><td>MBTI niveau 1 (The Myers-Briggs Company)</td><td class="n"><strong>3 690 € HT</strong>, 36,5 h</td>
+      <td>droit d'administrer l'instrument + <strong>achat des profils</strong></td></tr>
+    <tr><td>Prosci / ADKAR (international)</td><td class="n">≈ 4 000 €</td>
+      <td>abonnement d'un an à trois plateformes inclus</td></tr>
+  </tbody>
+</table>
+
+<figure>
+  <p class="figtitle">Grille ComCoop® proposée</p>
+  <p class="figsub">Hypothèses de prix, calées sur les comparables ci-dessus et sur la grille OPTA-S. À valider.</p>
+  <div id="f-grille"></div>
+  <figcaption>La rente n'est pas dans l'accréditation, qui est un acte unique, mais dans le <strong>kit participant</strong> :
+  90 € × 120 participants × 15 organisations = 162 k€ par an, récurrents, à coût marginal quasi nul.</figcaption>
+</figure>
+
+<div class="box">
+  <div class="t">Le principe à retenir de MBTI et Gallup</div>
+  <p>Gallup rend la <strong>recertification gratuite</strong> — un quiz de vingt questions tous les trois ans — parce que
+  la monétisation est ailleurs : sur les codes d'évaluation achetés à chaque passation. MBTI fait pareil avec les profils.
+  <strong>Ne cherchez pas à faire payer le renouvellement : faites payer ce qui se consomme à chaque session.</strong>
+  Une recertification légère à 900 € sert à contrôler la qualité du réseau, pas à financer le modèle.</p>
+</div>
+
+<h2><span class="num">Partie A · 3</span>Le point CNV, à traiter avant de lancer</h2>
+
+<p>ComCoop® mobilise les postures Girafe et Chacal et la logique émotions-besoins de Marshall Rosenberg. Deux nouvelles,
+une bonne et une contraignante.</p>
+
+<p><strong>La bonne : une méthode et des concepts ne sont appropriables par personne.</strong> Le droit d'auteur protège
+la forme, pas les idées. Vous pouvez enseigner la logique émotions-besoins et les métaphores animalières sans autorisation
+de quiconque.</p>
+
+<p><strong>La contraignante : le CNVC protège une signalétique.</strong> Ses règles de partage autorisent un formateur non
+certifié à animer des ateliers et à employer « CNV » <em>dans le corps du contenu</em>, mais lui interdisent d'utiliser
+« Center for Nonviolent Communication », « CNVC » et les titres d'ouvrages de Rosenberg dans les
+<strong>titres d'ateliers, cartes de visite, brochures et noms de domaine</strong> — et de se présenter comme formateur
+certifié CNVC.</p>
+
+<div class="box alert">
+  <div class="t">Trois interdits, une obligation</div>
+  <p><strong>Jamais</strong> « Communication NonViolente », « CNVC » ou « certifié CNVC » dans un titre de module, une
+  plaquette, une carte de visite ou un nom de domaine. <strong>Jamais</strong> de reproduction de supports du CNVC ou de
+  ses formateurs certifiés sans autorisation. <strong>Jamais</strong> de mention laissant croire à une certification que
+  vous n'avez pas — la mémoire projet note déjà que cette confusion a un coût en appel d'offres.</p>
+  <p><strong>Obligation :</strong> déposer <strong>ComCoop® en classe 41</strong> avec une recherche d'antériorité
+  INPI et EUIPO préalable. Je n'ai trouvé aucune marque française ou européenne opposable du CNVC en classe 41, ni
+  contentieux français publié — mais l'absence de preuve n'est pas une garantie, et cette vérification est un préalable,
+  pas une option.</p>
+</div>
+
+<h2><span class="num">Partie A · 4</span>Ce qu'il faut produire, et dans quel ordre</h2>
+
+<figure>
+  <p class="figtitle">Séquence sur douze mois</p>
+  <p class="figsub">Le dépôt de marque commande le calendrier : environ six mois entre le dépôt et l'enregistrement.</p>
+  <div id="f-seq"></div>
+  <figcaption>Les jours indiqués sont des jours de production interne. Le budget externe (recherche d'antériorité,
+  dépôt INPI, rédaction du contrat de licence, design du kit) est de l'ordre de 15 k€.</figcaption>
+</figure>
+
+<p>Deux livrables méritent une attention particulière, parce qu'ils sont la condition juridique du reste.</p>
+
+<p><strong>Le manuel opératoire confidentiel et daté.</strong> C'est votre preuve que le savoir-faire est substantiel,
+identifié et secret. Vos Fiches Techniques V8 de décembre 2025 en sont la matière ; il leur manque la mise en forme
+contractuelle et la clause de confidentialité. Sans ce document, la phase 2 est indéfendable.</p>
+
+<p><strong>L'unité pilote documentée.</strong> Elle n'est <em>pas</em> une obligation légale — c'est le code de
+déontologie européen de la franchise, non contraignant, qui l'exige. Mais c'est la seule façon de prouver que le
+savoir-faire est « testé ». Deux organisations pilotes en phase 1, documentées avec leurs résultats, suffisent.</p>
+
+<h2><span class="num">Partie B · 1</span>Immersif : ce qui est prouvé, et ce qu'il ne faut pas dire</h2>
+
+<p>La référence scientifique est la méta-analyse de <strong>Coban, Bolat et Goksu (2022)</strong>, parue dans
+<em>Educational Research Review</em> : 48 études expérimentales publiées entre 2016 et 2020.</p>
+
+<table>
+  <thead><tr><th>Comparaison</th><th class="n">Taille d'effet</th><th>Lecture</th></tr></thead>
+  <tbody>
+    <tr><td>Effet global de l'apprentissage immersif</td><td class="n"><strong>g = 0,38</strong></td><td>faible à modéré, mais réel</td></tr>
+    <tr><td>Contre les méthodes traditionnelles</td><td class="n"><strong>g = 0,54</strong></td><td>modéré — l'argument le plus solide</td></tr>
+    <tr><td>Contre l'apprentissage assisté par ordinateur</td><td class="n">g = 0,30</td><td>faible : l'immersion n'écrase pas le digital learning</td></tr>
+    <tr><td>Enseignement supérieur et adultes</td><td class="n">g = 0,31</td><td>plus faible que sur le scolaire (g = 0,61)</td></tr>
+  </tbody>
+</table>
+
+<div class="box alert">
+  <div class="t">N'utilisez jamais l'étude PwC en avant-vente</div>
+  <p>Elle circule partout : « quatre fois plus rapide », « +275 % de confiance à agir », « attachement émotionnel
+  3,75 fois supérieur ». C'est une <strong>étude de cabinet promouvant sa propre offre immersive</strong>, non publiée à
+  comité de lecture. Un acheteur public qui vérifie la trouvera citée dans toutes les plaquettes de vos concurrents.</p>
+  <p><strong>Citer g = 0,38 vous distingue</strong> — c'est un chiffre honnête, vérifiable, et il montre que vous lisez
+  la littérature au lieu de recopier les argumentaires d'éditeurs. Sur un critère « qualité pédagogique », c'est un
+  avantage, pas un handicap.</p>
+</div>
+
+<h2><span class="num">Partie B · 2</span>L'angle qui tient : l'AFEST, pas le casque</h2>
+
+<p>La méta-analyse dit aussi ceci, qu'il faut entendre : l'effet est <strong>plus marqué sur les disciplines techniques
+que sur les compétences relationnelles</strong>. Or le relationnel est exactement votre terrain. La conclusion n'est pas
+de renoncer — c'est de placer la valeur ailleurs que dans le dispositif.</p>
+
+<p>L'article <strong>D6313-3-2 du code du travail</strong> définit l'AFEST par quatre conditions cumulatives :
+une analyse de l'activité adaptée à des fins pédagogiques, un formateur-tuteur désigné à l'avance,
+<strong>des phases réflexives distinctes des mises en situation</strong>, et des évaluations spécifiques.</p>
+
+<div class="box">
+  <div class="t">C'est la troisième condition qui vous appartient</div>
+  <p>N'importe quel éditeur vend une mise en situation. <strong>La phase réflexive — le débrief, l'analyse de pratique,
+  le transfert — est votre métier depuis toujours</strong>, et c'est elle qui rend le dispositif finançable et évaluable.
+  Un escape game sans débrief structuré est une animation ; avec, c'est une action de formation au sens du code du travail.</p>
+  <p>Conséquence commerciale directe : <strong>ne vendez pas l'immersion, vendez le dispositif complet</strong> —
+  immersion + phases réflexives + évaluation. C'est ce qui justifie un forfait au lieu d'un prix jour, et c'est ce qu'un
+  fournisseur de serious game ne peut pas faire.</p>
+</div>
+
+<h2><span class="num">Partie B · 3</span>Le marché réel, et comment l'attaquer</h2>
+
+<p>Deux constats qui orientent le ciblage.</p>
+
+<p><strong>Le marché public immersif existe, mais il n'est pas managérial.</strong> SDIS du Gard, simulation en réalité
+virtuelle, accord-cadre estimé jusqu'à 171 000 € HT, publié en décembre 2024. CNPF Île-de-France, serious game sur la
+biodiversité. CMQE, jeu vidéo pédagogique. <strong>Aucun marché de simulation managériale identifié sur 2024-2026.</strong>
+La demande publique est technologique et sectorielle.</p>
+
+<p><strong>Donc ça ne s'attaque pas par appel d'offres.</strong> Ça se vend en gré à gré — le canal où vous convertissez
+à 82 % et où vous vendez 159 € de plus par jour qu'en accord-cadre. Et prioritairement sur les segments où vous gagnez :
+Sécurité sociale (84 %, 1 309 €), MSA (86 %), et le privé (86 %, 1 458 €).</p>
+
+<figure>
+  <p class="figtitle">Où porter l'offre immersive en priorité</p>
+  <p class="figsub">Taux de succès mesuré et prix jour 2026, par segment.</p>
+  <div id="f-cible"></div>
+  <figcaption>Odoo. Le prix jour sert ici d'indicateur de disposition à payer du segment, pas de tarif de l'offre
+  immersive — qui doit se vendre au forfait.</figcaption>
+</figure>
+
+<div class="box">
+  <div class="t">Le prix : au forfait, jamais au jour</div>
+  <p>« L'Équipée » a été proposée au CNFPT Réunion à <strong>9 900 € pour deux jours</strong>, soit un équivalent de
+  <strong>4 950 € par jour</strong> — près de cinq fois votre prix moyen. Ce n'est pas une anomalie, c'est la propriété
+  du format : <strong>un forfait immersif ne se compare pas ligne à ligne à un bordereau de prix unitaires.</strong>
+  Le jour où vous le vendrez en jours, vous perdrez cet écart.</p>
+  <p>Une précaution honnête sur les coûts : la seule donnée publique de production d'un serious game externalisé est de
+  <strong>20 000 € pour 40 minutes de jeu</strong> (Communotic Normandie, 2019 — donnée ancienne). Un format immersif
+  animé, sans développement logiciel, coûte évidemment beaucoup moins. Mais si vous partez vers du numérique, c'est
+  l'ordre de grandeur à avoir en tête.</p>
+</div>
+
+<h2><span class="num">Décisions</span>Ce qui se décide maintenant</h2>
+
+<ol class="axes">
+  <li>
+    <div class="ax-t">Lancer la recherche d'antériorité et le dépôt ComCoop® en classe 41</div>
+    <div class="ax-m">Cette semaine · budget externe ~2 500 € · délai ~6 mois</div>
+    <p>C'est le seul élément du plan dont le délai ne se comprime pas. Tout le reste peut avancer en parallèle, mais
+    rien ne se vend sous licence avant l'enregistrement. La recherche d'antériorité doit couvrir explicitement le champ
+    de la communication non violente.</p>
+  </li>
+  <li>
+    <div class="ax-t">Choisir les deux organisations pilotes</div>
+    <div class="ax-m">Ce mois-ci · aucun coût externe</div>
+    <p>Deux clients existants, si possible dans deux secteurs différents — une caisse et une collectivité. Ce sont eux
+    qui produiront la preuve que le référentiel est transmissible à des formateurs internes, et les premiers chiffres
+    de résultat opposables en phase 2.</p>
+  </li>
+  <li>
+    <div class="ax-t">Formaliser le manuel opératoire et le référentiel de certification</div>
+    <div class="ax-m">Trimestre 1 · 25 à 35 jours de production interne</div>
+    <p>La matière existe — Fiches Techniques V8, module Didask, Check Qualité à 14 critères qui fait déjà une grille
+    d'évaluation. Ce qui manque est la mise en forme contractuelle, la clause de confidentialité et le parcours
+    d'accréditation en quatre jours.</p>
+  </li>
+  <li>
+    <div class="ax-t">Bâtir l'offre immersive autour du débrief, pas du dispositif</div>
+    <div class="ax-m">Trimestre 1 · 10 à 15 jours · vente en gré à gré</div>
+    <p>Décliner « L'Équipée » en trois formats de durées différentes, chacun adossé aux quatre conditions de l'AFEST,
+    avec un argumentaire sourcé sur g = 0,38. Cible prioritaire : Sécurité sociale, MSA et privé.</p>
+  </li>
+  <li>
+    <div class="ax-t">Ne pas ouvrir la phase 2 avant douze mois</div>
+    <div class="ax-m">Décision de ne pas faire</div>
+    <p>Un réseau de praticiens indépendants avec territoires exige un DIP, un savoir-faire éprouvé et documenté, et
+    une capacité de contrôle qualité. Ouvrir trop tôt, c'est s'exposer à une annulation de contrats — et créer ses
+    propres concurrents avec sa propre méthode.</p>
+  </li>
+</ol>
+
+<h2><span class="num">Honnêteté</span>Ce que je n'ai pas trouvé</h2>
+
+<p>Aucun <strong>taux de redevance moyen publié</strong> pour la franchise de formation professionnelle destinée aux
+entreprises. Les exemples chiffrés disponibles concernent des centres de formation grand public, pas des méthodes.</p>
+
+<p>Aucun <strong>chiffrage public et fiable du marché français de la formation immersive</strong>. Les rapports de
+cabinets d'études commerciaux sont à écarter faute de méthodologie publiée. Le seul repère sérieux est le baromètre ISTF
+2025 (374 professionnels) : les serious games représentent 33 % des modalités utilisées, en hausse de 5 points.</p>
+
+<p>Aucun <strong>prix public d'une journée de formation immersive ou d'un escape game clé en main</strong>. Les agences
+annoncent « plusieurs milliers d'euros » sans grille. Votre propre proposition à 9 900 € pour deux jours est, en l'état,
+votre meilleure référence de prix.</p>
+
+<p>Aucune <strong>marque du CNVC opposable en France en classe 41</strong>, ni contentieux français publié sur ce point.
+Ce qui ne dispense pas de la recherche d'antériorité.</p>
+
+
+<footer>
+  <p><strong>Nature de ce document.</strong> Les références juridiques (articles L330-3 et R330-1 du code de commerce,
+  D6313-3-2 du code du travail, jurisprudences citées) et les prix comparables (Process Com, MBTI, Prosci) sont sourcés
+  et vérifiables. <strong>La grille tarifaire ComCoop® et la séquence de lancement sont des propositions</strong>, à
+  arbitrer. Ce document ne constitue pas un conseil juridique : le montage contractuel, le dépôt de marque et la
+  recherche d'antériorité doivent être confiés à un conseil en propriété industrielle et à un avocat spécialisé en
+  distribution.</p>
+  <p>OPTA-S — <em>« Vers une performance durable &amp; solidaire »</em></p>
+</footer>
+</div>
+<script>
+/* Franchise ComCoop® & offre immersive — 12/08/2026.
+   Prix comparables = publiés. Grille ComCoop = hypothèse posée, à valider. */
+const D = {
+  grille: [
+    { nom:"Accréditation d'un formateur interne", v:4500, det:"parcours de 4 jours + supervision + Check Qualité", type:"acte unique" },
+    { nom:"Licence annuelle par organisation", v:6000, det:"droit d'usage du référentiel, accès Didask, mises à jour, hotline", type:"récurrent" },
+    { nom:"Recertification, tous les 3 ans", v:900, det:"contrôle qualité léger, sur le modèle Gallup", type:"récurrent" },
+    { nom:"Kit par participant", v:90, det:"accès module e-learning + supports — LA rente", type:"consommable" }
+  ],
+  comparables: [
+    { nom:"Process Com — Kahler France", v:5890 },
+    { nom:"Prosci / ADKAR", v:4000 },
+    { nom:"ComCoop® — proposé", v:4500 },
+    { nom:"MBTI niveau 1", v:3690 }
+  ],
+  sequence: [
+    { t:"Recherche d'antériorité + dépôt INPI classe 41", d:"Mois 1 → 6", j:2, ext:"~2 500 €" },
+    { t:"Choix et cadrage des 2 organisations pilotes", d:"Mois 1 → 2", j:5, ext:"—" },
+    { t:"Manuel opératoire confidentiel daté", d:"Mois 2 → 4", j:15, ext:"—" },
+    { t:"Référentiel de certification + parcours 4 jours", d:"Mois 3 → 5", j:18, ext:"—" },
+    { t:"2e module Didask + kit participant", d:"Mois 4 → 6", j:12, ext:"~6 000 €" },
+    { t:"Contrat de licence type (avocat)", d:"Mois 5 → 6", j:3, ext:"~5 000 €" },
+    { t:"Accréditation des pilotes", d:"Mois 7 → 9", j:8, ext:"—" },
+    { t:"Ouverture commerciale phase 1", d:"Mois 10 → 12", j:6, ext:"—" }
+  ],
+  cible: [
+    { nom:"Autres secteurs (privé, associatif)", succes:86, pj:1458 },
+    { nom:"Mutualité sociale agricole", succes:86, pj:1166 },
+    { nom:"Sécurité sociale", succes:84, pj:1309 },
+    { nom:"Protection sociale", succes:72, pj:1072 },
+    { nom:"Collectivités locales", succes:53, pj:907 }
+  ]
+};
+
+</script>
+<script>
+(function(){
+const M={t:26,r:20,b:34,l:0}, C1='#1B4F91', C2='#E35205', GRID='#E6E8EC', INK='#3C3C3C', MUTED='#999999';
+const tip=document.getElementById('tip');
+const fmt=n=>n.toLocaleString('fr-FR');
+const el=(t,a={})=>{const e=document.createElementNS('http://www.w3.org/2000/svg',t);
+  for(const k in a)e.setAttribute(k,a[k]);return e;};
+function hook(node,html){
+  node.style.cursor='default';
+  node.addEventListener('mousemove',e=>{tip.innerHTML=html;tip.style.opacity=1;
+    let x=e.clientX+14,y=e.clientY-10;
+    if(x+tip.offsetWidth>window.innerWidth-8)x=e.clientX-tip.offsetWidth-14;
+    tip.style.left=x+'px';tip.style.top=y+'px';});
+  node.addEventListener('mouseleave',()=>{tip.style.opacity=0;});
+}
+function mount(id){const h=document.getElementById(id);if(!h)return null;return h;}
+
+/* ---------- barres horizontales ---------- */
+function barH(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900, rowH=opt.rowH||30, labelW=opt.labelW||250, pad=12;
+  const H=M.t+rows.length*rowH+M.b;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.02;
+  const plotW=W-labelW-90;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  // grille
+  const ticks=opt.ticks||4;
+  for(let i=0;i<=ticks;i++){
+    const v=max*i/ticks, x=labelW+plotW*i/ticks;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-8,y2:M.t+rows.length*rowH,stroke:GRID,'stroke-width':1}));
+    const tx=el('text',{x:x,y:M.t+rows.length*rowH+18,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+    tx.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(tx);
+  }
+  rows.forEach((r,i)=>{
+    const y=M.t+i*rowH, bh=rowH-10;
+    const w=Math.max(2,plotW*r.v/max);
+    const color=r.color||opt.color||C1;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:labelW,y:y,width:w,height:bh,fill:color,rx:4,ry:4}));
+    if(w>8) g.appendChild(el('rect',{x:labelW,y:y,width:Math.min(6,w),height:bh,fill:color}));
+    const lab=el('text',{x:labelW-pad,y:y+bh/2+4,'text-anchor':'end','font-size':13,fill:INK});
+    lab.textContent=r.k; g.appendChild(lab);
+    const val=el('text',{x:labelW+w+9,y:y+bh/2+4,'font-size':13,fill:INK,'font-weight':600});
+    val.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(val);
+    hook(g, r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const x=labelW+plotW*rf.v/max;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-14,y2:M.t+rows.length*rowH+2,
+      stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:x,y:M.t-19,'text-anchor':'middle','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- barres verticales ---------- */
+function barV(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||300, left=58, bottom=H-46, top=opt.top||26;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.15;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  const plotW=W-left-24, bw=Math.min(opt.bw||64, plotW/rows.length-16);
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max*(1-i/4);
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  rows.forEach((r,i)=>{
+    const cx=left+plotW*(i+.5)/rows.length, h=(bottom-top)*r.v/max;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-h,width:bw,height:h,fill:r.color||opt.color||C1,rx:4,ry:4}));
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-Math.min(6,h),width:bw,height:Math.min(6,h),fill:r.color||opt.color||C1}));
+    const v=el('text',{x:cx,y:bottom-h-8,'text-anchor':'middle','font-size':13,fill:INK,'font-weight':600});
+    v.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(v);
+    const l=el('text',{x:cx,y:bottom+19,'text-anchor':'middle','font-size':12.5,fill:INK});
+    l.textContent=r.k; g.appendChild(l);
+    if(r.k2){const l2=el('text',{x:cx,y:bottom+34,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+      l2.textContent=r.k2; g.appendChild(l2);}
+    hook(g,r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  svg.appendChild(el('line',{x1:left,x2:W-24,y1:bottom,y2:bottom,stroke:'#C9CDD4','stroke-width':1}));
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const y=bottom-(bottom-top)*rf.v/max;
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-26,y:y-7,'text-anchor':'end','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- lignes multi-séries ---------- */
+function lines(id,cats,series,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||320,left=62,right=24,top=30,bottom=H-46;
+  const all=series.flatMap(s=>s.v).concat(opt.extra||[]);
+  const max=opt.max||Math.max(...all)*1.10, min=opt.min!==undefined?opt.min:Math.min(...all)*0.88;
+  const X=i=>left+(W-left-right)*(cats.length===1?0.5:i/(cats.length-1));
+  const Y=v=>bottom-(bottom-top)*(v-min)/(max-min);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max-(max-min)*i/4;
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  if(opt.band){
+    svg.appendChild(el('rect',{x:left,y:Y(opt.band[1]),width:W-left-right,height:Math.abs(Y(opt.band[0])-Y(opt.band[1])),
+      fill:'#EFEFEA',opacity:.85}));
+    const t=el('text',{x:left+8,y:Y(opt.band[1])-6,'font-size':11.5,fill:MUTED});
+    t.textContent=opt.bandLabel||''; svg.appendChild(t);
+  }
+  cats.forEach((c,i)=>{
+    const t=el('text',{x:X(i),y:bottom+20,'text-anchor':'middle','font-size':12.5,fill:INK});
+    t.textContent=c; svg.appendChild(t);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:Y(rf.v),y2:Y(rf.v),stroke:rf.color||MUTED,
+      'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-right-2,y:Y(rf.v)-7,'text-anchor':'end','font-size':12,fill:rf.color||MUTED,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  series.forEach((s,si)=>{
+    const col=s.color||(si===0?C1:C2);
+    const d=s.v.map((v,i)=>(i?'L':'M')+X(i)+' '+Y(v)).join(' ');
+    svg.appendChild(el('path',{d:d,fill:'none',stroke:col,'stroke-width':2.5,'stroke-linejoin':'round'}));
+    s.v.forEach((v,i)=>{
+      svg.appendChild(el('circle',{cx:X(i),cy:Y(v),r:6.5,fill:'#FCFCFB',stroke:col,'stroke-width':2.5}));
+      const g=el('circle',{cx:X(i),cy:Y(v),r:15,fill:'transparent'});
+      hook(g,`<b>${cats[i]} — ${s.name}</b><br>${opt.tipFmt?opt.tipFmt(v,i,s):fmt(v)}`);
+      svg.appendChild(g);
+    });
+    const lastX=X(s.v.length-1), lastY=Y(s.v[s.v.length-1]);
+    let dy=-16;
+    for(let k=0;k<si;k++){
+      const oy=Y(series[k].v[series[k].v.length-1]);
+      if(Math.abs(oy-lastY)<24) dy = (lastY>=oy) ? 24 : -16;
+    }
+    const t=el('text',{x:lastX,y:lastY+dy,'text-anchor':'end','font-size':13,fill:col,'font-weight':700});
+    t.textContent=opt.labFmt?opt.labFmt(s.v[s.v.length-1]):fmt(s.v[s.v.length-1]); svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+window.__charts={barH,barV,lines,fmt};
+const K1='#1B4F91', K2='#E35205', GREY='#B9BEC7';
+const eur=v=>fmt(Math.round(v))+' €';
+
+/* grille tarifaire — tableau + barres comparables */
+(function(){
+  const host=document.getElementById('f-grille'); if(!host)return;
+  const t=`<table><thead><tr><th>Ligne</th><th class="n">Prix</th><th>Nature</th><th>Contenu</th></tr></thead><tbody>`+
+    D.grille.map(g=>`<tr><td><strong>${g.nom}</strong></td><td class="n"><strong>${eur(g.v)}</strong></td>
+      <td>${g.type}</td><td style="font-size:13px;color:#666">${g.det}</td></tr>`).join('')+`</tbody></table>`;
+  host.innerHTML=t+'<div id="f-comp"></div>';
+  barH('f-comp', D.comparables.map(c=>({k:c.nom, v:c.v,
+    color: c.nom.indexOf('proposé')>=0?K2:K1,
+    tip:`<b>${c.nom}</b><br>${eur(c.v)}`})),
+    {labelW:250, rowH:32, valFmt:r=>eur(r.v), tickFmt:v=>Math.round(v/1000)+' k€'});
+})();
+
+/* séquence */
+(function(){
+  const host=document.getElementById('f-seq'); if(!host)return;
+  host.innerHTML=`<table><thead><tr><th>Étape</th><th>Fenêtre</th><th class="n">Jours internes</th><th class="n">Budget externe</th></tr></thead><tbody>`+
+    D.sequence.map(s=>`<tr><td><strong>${s.t}</strong></td><td>${s.d}</td><td class="n">${s.j} j</td><td class="n">${s.ext}</td></tr>`).join('')+
+    `<tr><td><strong>Total</strong></td><td></td><td class="n"><strong>${D.sequence.reduce((a,s)=>a+s.j,0)} j</strong></td>
+     <td class="n"><strong>~13 500 €</strong></td></tr></tbody></table>`;
+})();
+
+/* ciblage */
+barH('f-cible', D.cible.map(c=>({k:c.nom, v:c.succes, pj:c.pj,
+  color: c.succes<70?K2:K1,
+  tip:`<b>${c.nom}</b><br>${c.succes} % de succès<br>${eur(c.pj)} par jour en 2026`})),
+  {labelW:270, rowH:32, max:100, valFmt:r=>r.v+' %  ·  '+eur(r.pj)+'/j', tickFmt:v=>Math.round(v)+' %'});
+
+})();
+</script>
+</body>
+</html>

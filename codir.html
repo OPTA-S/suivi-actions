@@ -116,9 +116,23 @@
   .toast.show { opacity: 1; }
   @media (max-width: 950px) { .kanban { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 700px) { .kanban, .form-grid { grid-template-columns: 1fr; } }
+
+.codirnav{background:#002D69;position:sticky;top:0;z-index:50;margin:0 -24px}
+.codirnav .in{max-width:1050px;margin:0 auto;padding:0 28px;display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+.codirnav a{font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+  color:#A8BDD8;text-decoration:none;padding:11px 12px;font-weight:700;border-bottom:3px solid transparent}
+.codirnav a:hover{color:#fff}
+.codirnav a.home{color:#fff}
+.codirnav a.on{color:#fff;border-bottom-color:#FF6600}
+.codirnav a.suivi{margin-left:auto;color:#FF9B4D}
+.codirnav a.suivi:hover{color:#FF6600}
+@media(max-width:700px){.codirnav .in{padding:0 14px}.codirnav a{padding:9px 8px;font-size:12px}}
+
+  body{padding-top:0}
 </style>
 </head>
 <body>
+<nav class="codirnav"><div class="in"><a class="home" href="index.html">&#8962; CODIR</a><a href="diagnostic.html">Diagnostic</a><a href="prix-et-mix.html">Prix & mix</a><a href="produits.html">4 produits</a><a href="comcoop.html">ComCoop®</a><a href="benchmark.html">Benchmark</a><a class="suivi on" href="codir.html">Suivi &#8599;</a></div></nav>
 <header>
   <div class="brand">
     <h1>CODIR GROUPE</h1>

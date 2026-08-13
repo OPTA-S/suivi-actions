@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portail pilotage groupe — Quatre produits, chiffrés</title>
+<style>
+:root{
+  --marine:#002D69; --orange:#FF6600; --gris:#3C3C3C; --gris-clair:#999999;
+  --serie1:#1B4F91; --serie2:#E35205; --grid:#E6E8EC; --surface:#FCFCFB;
+  --encadre:#F4F5F7; --bleu-pale:#A4BBD8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--gris);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+.wrap{max-width:980px;margin:0 auto;padding:0 28px 90px}
+h1,h2,h3,h4,.nar{font-family:"Arial Narrow",Arial,sans-serif}
+header.hero{border-bottom:3px solid var(--orange);padding:46px 0 26px;margin-bottom:34px}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);font-weight:700;margin:0 0 10px}
+h1{font-size:40px;line-height:1.12;color:var(--marine);margin:0 0 12px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--gris-clair);font-size:15px;margin:0}
+h2{font-size:27px;color:var(--marine);margin:56px 0 6px;font-weight:700;letter-spacing:-.005em;
+   padding-top:22px;border-top:1px solid var(--grid)}
+h2 .num{color:var(--orange);font-size:15px;display:block;letter-spacing:.14em;margin-bottom:6px;text-transform:uppercase}
+h3{font-size:19px;color:var(--orange);margin:34px 0 8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+h4{font-size:16px;color:var(--marine);margin:24px 0 6px;font-weight:700}
+p{margin:0 0 15px}
+strong{color:var(--marine);font-weight:700}
+em.src{font-style:normal;color:var(--gris-clair);font-size:13px}
+a{color:var(--serie1)}
+.lede{font-size:18px;line-height:1.6;color:var(--gris)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin:26px 0 6px}
+.tile{border:1px solid var(--grid);border-left:3px solid var(--orange);padding:15px 16px;background:#fff;border-radius:3px}
+.tile .v{font-family:"Arial Narrow",Arial,sans-serif;font-size:30px;font-weight:700;color:var(--marine);line-height:1.05}
+.tile .l{font-size:12.5px;color:var(--gris-clair);margin-top:5px;line-height:1.35}
+.tile.warn{border-left-color:var(--serie2)}
+.tile.ok{border-left-color:var(--serie1)}
+figure{margin:26px 0 8px;border:1px solid var(--grid);background:#fff;border-radius:3px;padding:18px 18px 10px}
+figcaption{font-size:13px;color:var(--gris-clair);margin-top:10px;line-height:1.45;border-top:1px solid var(--grid);padding-top:9px}
+.figtitle{font-family:"Arial Narrow",Arial,sans-serif;font-size:17px;font-weight:700;color:var(--marine);margin:0 0 2px}
+.figsub{font-size:13px;color:var(--gris-clair);margin:0 0 14px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--gris);margin:0 0 12px}
+.legend i{width:11px;height:11px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
+.box{background:var(--encadre);border-left:3px solid var(--marine);padding:16px 20px;margin:24px 0;border-radius:0 3px 3px 0}
+.box.alert{border-left-color:var(--serie2);background:#FDF3EE}
+.box p:last-child{margin-bottom:0}
+.box .t{font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;color:var(--marine);font-size:15px;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:20px 0}
+th{text-align:left;font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;text-transform:uppercase;
+   letter-spacing:.05em;color:var(--marine);border-bottom:2px solid var(--marine);padding:8px 10px 7px}
+td{padding:8px 10px;border-bottom:1px solid var(--grid)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr:hover td{background:#FAFBFC}
+.tag{display:inline-block;font-size:11.5px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:.03em}
+.tag.up{background:#E8F0F9;color:var(--serie1)} .tag.down{background:#FBEAE2;color:var(--serie2)}
+.tag.flat{background:#F0F1F3;color:var(--gris-clair)}
+ol.axes{list-style:none;counter-reset:ax;padding:0;margin:26px 0}
+ol.axes>li{counter-increment:ax;position:relative;padding:18px 0 18px 62px;border-bottom:1px solid var(--grid)}
+ol.axes>li::before{content:counter(ax);position:absolute;left:0;top:16px;width:42px;height:42px;border-radius:50%;
+  background:var(--marine);color:#fff;font-family:"Arial Narrow",Arial,sans-serif;font-size:21px;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+ol.axes>li .ax-t{font-family:"Arial Narrow",Arial,sans-serif;font-size:20px;font-weight:700;color:var(--marine);margin-bottom:2px}
+ol.axes>li .ax-m{font-size:12.5px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.tip{position:fixed;pointer-events:none;background:var(--marine);color:#fff;font-size:12.5px;padding:7px 10px;
+  border-radius:3px;opacity:0;transition:opacity .12s;z-index:99;line-height:1.45;white-space:nowrap}
+details{margin:14px 0;border:1px solid var(--grid);border-radius:3px;background:#fff}
+summary{cursor:pointer;padding:11px 15px;font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;
+  color:var(--marine);font-size:15px;text-transform:uppercase;letter-spacing:.04em}
+details[open] summary{border-bottom:1px solid var(--grid)}
+details .in{padding:4px 15px 12px}
+footer{margin-top:60px;padding-top:22px;border-top:3px solid var(--orange);font-size:13px;color:var(--gris-clair)}
+@media(max-width:640px){h1{font-size:30px}h2{font-size:22px}.wrap{padding:0 16px 60px}}
+
+.codirnav{background:#002D69;position:sticky;top:0;z-index:50}
+.codirnav .in{max-width:1050px;margin:0 auto;padding:0 28px;display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+.codirnav a{font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+  color:#A8BDD8;text-decoration:none;padding:11px 12px;font-weight:700;border-bottom:3px solid transparent}
+.codirnav a:hover{color:#fff}
+.codirnav a.home{color:#fff}
+.codirnav a.on{color:#fff;border-bottom-color:#FF6600}
+.codirnav a.suivi{margin-left:auto;color:#FF9B4D}
+.codirnav a.suivi:hover{color:#FF6600}
+@media(max-width:700px){.codirnav .in{padding:0 14px}.codirnav a{padding:9px 8px;font-size:12px}}
+</style>
+</head>
+<body>
+<nav class="codirnav"><div class="in"><a class="home" href="index.html">&#8962; CODIR</a><a href="diagnostic.html">Diagnostic</a><a href="prix-et-mix.html">Prix & mix</a><a href="produits.html" class="on">4 produits</a><a href="comcoop.html">ComCoop®</a><a href="benchmark.html">Benchmark</a><a class="suivi" href="codir.html">Suivi &#8599;</a></div></nav>
+<div class="tip" id="tip"></div>
+<div class="wrap">
+
+<header class="hero">
+  <p class="kicker">Portail pilotage groupe · Modèles économiques</p>
+  <h1>Sortir du jour-homme</h1>
+  <p class="sub">Licence Com'Coop® · EMI régional · Abonnement · IA — quatre modèles chiffrés sur trois ans<br>
+  Socle mesuré : Odoo <code>is.activite</code> et portail de pilotage · hypothèses posées le 12/08/2026, à valider en CODIR</p>
+</header>
+
+<p class="lede">Quatre produits, chiffrés sur trois ans. <strong>Tous les prix et tous les volumes ci-dessous sont des
+hypothèses posées par l'analyse</strong>, signalées comme telles, et à valider en CODIR. Seul le socle — 2 344 jours
+produits en 2025 à 1 012 € le jour, 60 % de taux de charge, 88 % de taux de consommation — est mesuré.</p>
+
+<div class="tiles">
+  <div class="tile ok"><div class="v">345 k€</div><div class="l">contribution nette an 1, scénario central</div></div>
+  <div class="tile ok"><div class="v">1 273 k€</div><div class="l">contribution nette an 3, scénario central</div></div>
+  <div class="tile"><div class="v">16 %</div><div class="l">de la capacité de production mobilisée en an 3</div></div>
+  <div class="tile ok"><div class="v">11 941 €</div><div class="l">CA par jour produit de la licence Com'Coop en an 3</div></div>
+  <div class="tile warn"><div class="v">An 1 = 0</div><div class="l">gain de l'abonnement la première année : la bascule coûte avant de rapporter</div></div>
+  <div class="tile"><div class="v">1 012 €</div><div class="l">CA par jour actuel — la référence à battre</div></div>
+</div>
+
+<h2><span class="num">Le cadre</span>Pourquoi sortir du jour-homme, et ce que ça coûte</h2>
+
+<p>Le raisonnement ne tient que si l'on accepte trois faits mesurés ailleurs.</p>
+
+<table>
+  <thead><tr><th>Repère</th><th class="n">Valeur</th><th>Ce que ça dit</th></tr></thead>
+  <tbody id="p-bench"></tbody>
+</table>
+
+<div class="box alert">
+  <div class="t">Le prix à payer, personne ne le dit jamais</div>
+  <p>FranklinCovey est le seul acteur du secteur à publier des comptes détaillant la bascule vers l'abonnement.
+  Ils y sont arrivés : <strong>84,6 % du chiffre d'affaires en abonnement, 76,2 % de marge brute</strong>.
+  Mais sur le même exercice, <strong>leur chiffre d'affaires total a baissé de 287 à 267 M$</strong>.
+  L'abonnement achète de la prévisibilité et de la marge — pas de la croissance immédiate.
+  <strong>Toute projection qui montre un gain dès la première année est fausse.</strong> C'est pourquoi
+  le modèle ci-dessous pose un gain nul en an 1 sur l'abonnement.</p>
+</div>
+
+<h2><span class="num">Produit 1</span>Licence Com'Coop®</h2>
+<div id="p-comcoop"></div>
+
+<h2><span class="num">Produit 2</span>EMI en promotion régionale</h2>
+<div id="p-emi"></div>
+
+<h2><span class="num">Produit 3</span>Abonnement d'accès</h2>
+<div id="p-abo"></div>
+
+<h2><span class="num">Produit 4</span>Offre IA</h2>
+<div id="p-ia"></div>
+
+<div class="box">
+  <div class="t">L'IA n'est pas seulement un produit — c'est ce qui rend les trois autres possibles</div>
+  <p>Un module e-learning produit en trois semaines avec un outil auteur assisté par IA, c'est ce qui rend la
+  <strong>licence Com'Coop économiquement viable</strong> : sans production industrialisée de contenu, le kit
+  participant et l'accès plateforme n'existent pas. De même, une bibliothèque de cas d'usage par métier
+  n'est constituable à coût raisonnable que par ce moyen.</p>
+  <p>C'est la raison de traiter l'IA comme un axe distinct plutôt que comme une offre de plus : elle change
+  le coût de production, donc la structure de l'offre — pas seulement le catalogue.</p>
+</div>
+
+<h2><span class="num">Consolidé</span>Ce que ça fait ensemble</h2>
+
+<figure>
+  <p class="figtitle">Contribution nette par produit, sur trois ans</p>
+  <p class="figsub">Milliers d'euros. Après coûts directs de l'EMI et cannibalisation de l'animation Com'Coop.</p>
+  <div class="legend" id="p-contrib-legend"></div>
+  <div id="p-contrib"></div>
+  <figcaption>L'abonnement est compté en <strong>gain net</strong> (différence entre le forfait et la valeur des jours
+  consommés au prix actuel), et non en chiffre d'affaires : c'est une conversion de clients existants, pas une conquête.
+  Le compter en CA reviendrait à le compter deux fois.</figcaption>
+</figure>
+
+<figure>
+  <p class="figtitle">Trois scénarios</p>
+  <p class="figsub">Contribution nette additionnelle, en milliers d'euros.</p>
+  <div class="legend" id="p-sc-legend"></div>
+  <div id="p-scenarios"></div>
+  <figcaption>Prudent : Com'Coop et EMI seuls, à 60 % des volumes. Central : les quatre produits aux hypothèses posées.
+  Haut : IA et abonnement 30 % au-dessus du central.</figcaption>
+</figure>
+
+<figure>
+  <p class="figtitle">Chiffre d'affaires par jour produit</p>
+  <p class="figsub">Euros. Échelle logarithmique impossible ici — la licence sort du graphique, c'est le point.</p>
+  <div id="p-caj"></div>
+  <figcaption>C'est le seul indicateur qui compte pour juger un produit : combien d'euros par jour-consultant mobilisé.
+  La licence Com'Coop est douze fois plus efficiente que la vente au jour, parce que le chiffre d'affaires cesse
+  d'être proportionnel à l'effectif.</figcaption>
+</figure>
+
+<h3>La capacité n'est pas le facteur limitant</h3>
+
+<table>
+  <thead><tr><th>Année</th><th class="n">Jours mobilisés par les produits</th><th class="n">Capacité totale</th><th class="n">Part</th></tr></thead>
+  <tbody id="p-capa"></tbody>
+</table>
+
+<p>Même en an 3, les quatre produits ne mobilisent que <strong>16 % de la production</strong>. Avec un taux de charge
+actuel de 60 %, la marge de manœuvre existe. <strong>Le facteur limitant n'est pas la capacité de production, c'est la
+capacité commerciale</strong> — et elle repose aujourd'hui sur une seule personne, qui vend 63 % du chiffre d'affaires
+du groupe. C'est le vrai goulot de ce plan.</p>
+
+<div class="box alert">
+  <div class="t">Les quatre choses qu'il faut décider, pas analyser</div>
+  <p><strong>1. Accepter de cannibaliser.</strong> La licence Com'Coop supprime environ 111 k€ d'animation par an.
+  Sans cette acceptation, le produit ne sera jamais vendu par ceux qui vivent de l'animation.</p>
+  <p><strong>2. Déposer la marque.</strong> Un référentiel qu'on licencie sans marque déposée n'est pas un actif.
+  C'est la condition juridique du produit 1, et elle prend six mois.</p>
+  <p><strong>3. Tenir le remplissage de l'EMI.</strong> Le point mort est à 7 stagiaires par promotion. À 8, la marge
+  tombe de 36 600 € à 7 200 €. C'est un produit à fort levier — dans les deux sens.</p>
+  <p><strong>4. Décider qui vend.</strong> Aucun de ces quatre produits ne se vend comme une journée de formation.
+  Si la vente reste sur une seule personne déjà à 63 % du CA, le scénario prudent est le seul réaliste.</p>
+</div>
+
+<h2><span class="num">Honnêteté</span>Ce que ce modèle ne sait pas</h2>
+
+<p><strong>Le coût de revient d'une journée-consultant.</strong> Il n'existe nulle part dans les données. Toutes les
+« marges » de ce document sont des marges sur coûts directs identifiés, jamais des marges nettes.</p>
+
+<p><strong>Le coût direct réel d'une promotion EMI.</strong> Les 32 000 € posés en hypothèse sont une reconstitution à
+partir du forfait de 49 900 €. Le chiffre exact est chez vous, pas dans Odoo.</p>
+
+<p><strong>L'élasticité des prix posés.</strong> 3 500 € pour une certification, 6 000 € pour une licence annuelle,
+4 900 € par stagiaire : ces montants sont calibrés sur des comparables étrangers (Prosci) et sur votre propre grille.
+Aucun n'a été testé sur un acheteur public français. <strong>Le premier test commercial vaut plus que dix pages de
+modèle.</strong></p>
+
+<p><strong>La durée de la fenêtre IA.</strong> Le prix de 1 500 € par jour repose sur une rareté qui se refermera.
+Aucune source publique ne documente à ce jour de baisse mesurée des prix de l'ingénierie pédagogique imputable à l'IA —
+mais l'absence de preuve n'est pas une garantie de durée.</p>
+
+<details>
+  <summary>Toutes les hypothèses, produit par produit</summary>
+  <div class="in" id="p-hyp"></div>
+</details>
+
+
+<footer>
+  <p><strong>Statut de ce document.</strong> Ce n'est pas une prévision, c'est un modèle. Le socle est mesuré
+  (2 344 jours produits en 2025, 1 012 € de prix jour, 60 % de taux de charge, 88 % de taux de consommation) ;
+  <strong>tous les prix unitaires et tous les volumes commerciaux sont des hypothèses posées par l'analyse</strong>,
+  listées en annexe et à valider. Aucun coût de revient par journée-consultant n'étant disponible, les « marges »
+  affichées sont des marges sur coûts directs identifiés, jamais des marges nettes. Les repères externes
+  (FranklinCovey, Prosci, Insights, SPI Research) sont sourcés et datés dans la note de marché associée.</p>
+  <p>OPTA-S — <em>« Vers une performance durable &amp; solidaire »</em></p>
+</footer>
+</div>
+<script>
+/* Modèles économiques — 12/08/2026.
+   MESURÉ = Odoo is.activite / portail. HYPOTHÈSE = posée par l'analyse, à valider par le CODIR. */
+const D = {
+  socle: {
+    ca2025: 2372677, jours2025: 2344, pj2025: 1012, charge: 60,
+    consultants: 10, joursDispo: 2344
+  },
+  bench: [
+    { nom:"FranklinCovey — part abonnement", v:"84,6 %", det:"exercice 2025 clos le 05/11/2025 ; marge brute 76,2 % ; CA total en baisse de 287 à 267 M$" },
+    { nom:"Prosci — praticiens certifiés", v:"267 000", det:"dans plus de 80 pays ; certification 4 500 $ en ligne, abonnement 1 an inclus" },
+    { nom:"Insights Discovery — praticiens", v:"35 000", det:"52 pays, 3 500 organisations clientes" },
+    { nom:"Taux de facturation moyen du secteur", v:"68,9 %", det:"SPI Research 2025, 403 cabinets ; 65,4 % pour la tranche 10-30 salariés ; OPTA-S est à 60 %" }
+  ],
+  produits: [
+    {
+      id:"comcoop", nom:"Licence Com'Coop®", sous:"Le modèle Prosci transposé — certifier des formateurs internes",
+      mecanique:"On cesse de vendre l'animation. On vend le droit d'usage du référentiel : une licence annuelle par organisation, une certification des formateurs internes du client, et un kit par participant.",
+      hyp:[
+        ["Certification d'un formateur interne","3 500 €","parcours de 4 jours + supervision ; Prosci facture l'équivalent de ~4 000 €"],
+        ["Licence annuelle par organisation","6 000 €","référentiel, accès Didask, mises à jour, hotline"],
+        ["Kit par participant","90 €","accès module e-learning + supports"],
+        ["Formateurs certifiés par organisation","4 la 1re année, puis 2/an",""],
+        ["Participants par organisation et par an","120",""],
+        ["Organisations sous licence","3 → 8 → 15","montée en charge sur trois ans"]
+      ],
+      an:[
+        {a:"An 1", ca:92400, j:14, det:"3 organisations"},
+        {a:"An 2", ca:225400, j:24, det:"8 organisations"},
+        {a:"An 3", ca:406000, j:34, det:"15 organisations"}
+      ],
+      invest:"40 à 60 jours de production interne (référentiel de certification, 2 modules Didask, kit) + environ 15 k€ externes (dépôt INPI, design, plateforme).",
+      risque:"Cannibalisation de l'animation Com'Coop actuelle — mesurée à 417 jours et 443 k€ cumulés depuis 2023, soit ~111 k€/an. Le modèle ne devient positif qu'au-delà de 5 organisations.",
+      preuve:"Programme propriétaire existant (6-8 mois), module e-learning en ligne depuis janvier 2026, une quinzaine de fiches techniques déjà produites."
+    },
+    {
+      id:"emi", nom:"EMI en promotion régionale", sous:"Transformer un forfait intra en produit inter réplicable",
+      mecanique:"Aujourd'hui vendu en intra à une collectivité. Demain vendu en promotion régionale multi-employeurs : plusieurs collectivités mutualisent, chacune inscrit deux à quatre cadres.",
+      hyp:[
+        ["Prix par stagiaire en inter","4 900 €","contre 4 160 € implicites en intra (49 900 € ÷ 12)"],
+        ["Stagiaires par promotion","14","le forfait actuel couvre 8 à 16 ; coût marginal nul du 9e au 16e"],
+        ["Coût direct par promotion","32 000 €","12 jours d'animation, partenaires ESSEC et CY, D.U., salles, déplacements — À VALIDER"],
+        ["Promotions par an","2 → 4 → 6","Réunion et Val d'Oise en amorçage"]
+      ],
+      an:[
+        {a:"An 1", ca:137200, j:24, det:"2 promotions", marge:73200},
+        {a:"An 2", ca:274400, j:48, det:"4 promotions", marge:146400},
+        {a:"An 3", ca:411600, j:72, det:"6 promotions", marge:219600}
+      ],
+      invest:"Faible : le produit existe. L'effort porte sur la commercialisation multi-employeurs et le montage juridique de la promotion mutualisée.",
+      risque:"Le remplissage. Une promotion à 8 stagiaires au lieu de 14 fait tomber la marge de 36 600 € à 7 200 €. Le point mort est à 7 stagiaires.",
+      preuve:"12 promotions depuis 2015, plus de 250 cadres formés, D.U. délivré par CY Cergy Paris Université, forfait 49 900 € nets déjà pratiqué."
+    },
+    {
+      id:"abo", nom:"Abonnement d'accès", sous:"Le modèle All Access Pass, en version cabinet",
+      mecanique:"Un forfait annuel donnant droit à un volume d'interventions, un accès aux outils, une hotline et une veille réglementaire. Les jours non consommés restent acquis.",
+      hyp:[
+        ["Formule Argent","18 000 €/an","12 jours + accès ; soit 1 500 €/j nominal contre 1 012 € pratiqués"],
+        ["Prime d'accès incluse","+20 %","au-delà de la valeur des jours (12 × 1 250 €)"],
+        ["Taux de consommation","88 %","mesuré : 6 496 jours réalisés pour 7 417 vendus"],
+        ["Part du CA convertie","15 % → 25 % → 30 %","conversion de clients récurrents, pas de conquête"]
+      ],
+      an:[
+        {a:"An 1", ca:360000, j:211, det:"20 abonnements Argent", gain:0},
+        {a:"An 2", ca:594000, j:348, det:"33 abonnements", gain:242000},
+        {a:"An 3", ca:720000, j:422, det:"40 abonnements, ~30 % du CA", gain:293000}
+      ],
+      invest:"Aucun investissement matériel. L'effort est contractuel et commercial : construire l'offre, la grille, et convaincre les acheteurs publics d'un engagement pluriannuel.",
+      risque:"FranklinCovey a vu son CA total baisser de 287 à 267 M$ pendant la bascule. L'an 1 doit être considéré comme neutre, pas positif. Et l'engagement pluriannuel est difficile en commande publique.",
+      preuve:"Le taux de consommation de 88 % est mesuré : la sous-consommation est structurelle et deviendrait de la marge."
+    },
+    {
+      id:"ia", nom:"Offre IA", sous:"Un marché qui s'ouvre, et surtout un habilitant des trois autres",
+      mecanique:"Trois briques, du plus sûr au plus spéculatif : la formation des agents à l'IA (jour-homme à prix fort), le diagnostic et cadrage des usages (forfait), et à terme une bibliothèque de cas d'usage par métier vendue en licence.",
+      hyp:[
+        ["Formation IA — prix jour","1 500 €","prime de rareté sur un marché en création ; à comparer aux 1 012 € moyens"],
+        ["Formation IA — volume","60 j → 100 j → 150 j",""],
+        ["Diagnostic IA — forfait","30 000 €","cadrage usages, métiers, gouvernance"],
+        ["Diagnostic IA — volume","3 → 6 → 8 missions",""],
+        ["Jours par diagnostic","15",""]
+      ],
+      an:[
+        {a:"An 1", ca:180000, j:105, det:"60 j de formation + 3 diagnostics"},
+        {a:"An 2", ca:330000, j:190, det:"100 j + 6 diagnostics"},
+        {a:"An 3", ca:465000, j:270, det:"150 j + 8 diagnostics"}
+      ],
+      invest:"Montée en compétence de l'équipe et production d'un corpus de cas d'usage. L'étude CNFPT en cours produit une partie de la matière.",
+      risque:"Le prix de 1 500 € n'est pas tenable longtemps : la banalisation est rapide. C'est une fenêtre de deux à trois ans, pas une rente.",
+      preuve:"Marché CNFPT « Étude IA métiers territoriaux » gagné (99,4 k€ / 92 jours). Cadre commun DINUM-DITP-DGAFP du 16/06/2026. Offre nationale CNFPT sur l'IA depuis février 2025. Fiche DAE achat responsable IA du 15/12/2025."
+    }
+  ],
+  scenarios: [
+    { nom:"Prudent", det:"Com'Coop et EMI seuls, à 60 % des volumes ; ni IA ni abonnement", an1:100, an2:155, an3:310 },
+    { nom:"Central", det:"les quatre produits, hypothèses ci-dessus", an1:345, an2:830, an3:1273 },
+    { nom:"Haut", det:"IA et abonnement 30 % au-dessus du central", an1:400, an2:1000, an3:1500 }
+  ],
+  contribution: [
+    { a:"An 1", comcoop:92, emi:73, ia:180, abo:0,   total:345 },
+    { a:"An 2", comcoop:114, emi:146, ia:330, abo:242, total:832 },
+    { a:"An 3", comcoop:295, emi:220, ia:465, abo:293, total:1273 }
+  ],
+  capacite: [
+    { a:"An 1", produits:143, total:2344, part:6 },
+    { a:"An 2", produits:262, total:2344, part:11 },
+    { a:"An 3", produits:376, total:2344, part:16 }
+  ],
+  caParJour: [
+    { nom:"Licence Com'Coop® (an 3)", v:11941 },
+    { nom:"EMI régional (an 3)", v:5717 },
+    { nom:"Offre IA (an 3)", v:1722 },
+    { nom:"Abonnement (an 3)", v:1705 },
+    { nom:"Prix jour actuel OPTA-S", v:1012 }
+  ]
+};
+
+</script>
+<script>
+(function(){
+const M={t:26,r:20,b:34,l:0}, C1='#1B4F91', C2='#E35205', GRID='#E6E8EC', INK='#3C3C3C', MUTED='#999999';
+const tip=document.getElementById('tip');
+const fmt=n=>n.toLocaleString('fr-FR');
+const el=(t,a={})=>{const e=document.createElementNS('http://www.w3.org/2000/svg',t);
+  for(const k in a)e.setAttribute(k,a[k]);return e;};
+function hook(node,html){
+  node.style.cursor='default';
+  node.addEventListener('mousemove',e=>{tip.innerHTML=html;tip.style.opacity=1;
+    let x=e.clientX+14,y=e.clientY-10;
+    if(x+tip.offsetWidth>window.innerWidth-8)x=e.clientX-tip.offsetWidth-14;
+    tip.style.left=x+'px';tip.style.top=y+'px';});
+  node.addEventListener('mouseleave',()=>{tip.style.opacity=0;});
+}
+function mount(id){const h=document.getElementById(id);if(!h)return null;return h;}
+
+/* ---------- barres horizontales ---------- */
+function barH(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900, rowH=opt.rowH||30, labelW=opt.labelW||250, pad=12;
+  const H=M.t+rows.length*rowH+M.b;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.02;
+  const plotW=W-labelW-90;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  // grille
+  const ticks=opt.ticks||4;
+  for(let i=0;i<=ticks;i++){
+    const v=max*i/ticks, x=labelW+plotW*i/ticks;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-8,y2:M.t+rows.length*rowH,stroke:GRID,'stroke-width':1}));
+    const tx=el('text',{x:x,y:M.t+rows.length*rowH+18,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+    tx.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(tx);
+  }
+  rows.forEach((r,i)=>{
+    const y=M.t+i*rowH, bh=rowH-10;
+    const w=Math.max(2,plotW*r.v/max);
+    const color=r.color||opt.color||C1;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:labelW,y:y,width:w,height:bh,fill:color,rx:4,ry:4}));
+    if(w>8) g.appendChild(el('rect',{x:labelW,y:y,width:Math.min(6,w),height:bh,fill:color}));
+    const lab=el('text',{x:labelW-pad,y:y+bh/2+4,'text-anchor':'end','font-size':13,fill:INK});
+    lab.textContent=r.k; g.appendChild(lab);
+    const val=el('text',{x:labelW+w+9,y:y+bh/2+4,'font-size':13,fill:INK,'font-weight':600});
+    val.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(val);
+    hook(g, r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const x=labelW+plotW*rf.v/max;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-14,y2:M.t+rows.length*rowH+2,
+      stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:x,y:M.t-19,'text-anchor':'middle','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- barres verticales ---------- */
+function barV(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||300, left=58, bottom=H-46, top=opt.top||26;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.15;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  const plotW=W-left-24, bw=Math.min(opt.bw||64, plotW/rows.length-16);
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max*(1-i/4);
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  rows.forEach((r,i)=>{
+    const cx=left+plotW*(i+.5)/rows.length, h=(bottom-top)*r.v/max;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-h,width:bw,height:h,fill:r.color||opt.color||C1,rx:4,ry:4}));
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-Math.min(6,h),width:bw,height:Math.min(6,h),fill:r.color||opt.color||C1}));
+    const v=el('text',{x:cx,y:bottom-h-8,'text-anchor':'middle','font-size':13,fill:INK,'font-weight':600});
+    v.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(v);
+    const l=el('text',{x:cx,y:bottom+19,'text-anchor':'middle','font-size':12.5,fill:INK});
+    l.textContent=r.k; g.appendChild(l);
+    if(r.k2){const l2=el('text',{x:cx,y:bottom+34,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+      l2.textContent=r.k2; g.appendChild(l2);}
+    hook(g,r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  svg.appendChild(el('line',{x1:left,x2:W-24,y1:bottom,y2:bottom,stroke:'#C9CDD4','stroke-width':1}));
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const y=bottom-(bottom-top)*rf.v/max;
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-26,y:y-7,'text-anchor':'end','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- lignes multi-séries ---------- */
+function lines(id,cats,series,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||320,left=62,right=24,top=30,bottom=H-46;
+  const all=series.flatMap(s=>s.v).concat(opt.extra||[]);
+  const max=opt.max||Math.max(...all)*1.10, min=opt.min!==undefined?opt.min:Math.min(...all)*0.88;
+  const X=i=>left+(W-left-right)*(cats.length===1?0.5:i/(cats.length-1));
+  const Y=v=>bottom-(bottom-top)*(v-min)/(max-min);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max-(max-min)*i/4;
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  if(opt.band){
+    svg.appendChild(el('rect',{x:left,y:Y(opt.band[1]),width:W-left-right,height:Math.abs(Y(opt.band[0])-Y(opt.band[1])),
+      fill:'#EFEFEA',opacity:.85}));
+    const t=el('text',{x:left+8,y:Y(opt.band[1])-6,'font-size':11.5,fill:MUTED});
+    t.textContent=opt.bandLabel||''; svg.appendChild(t);
+  }
+  cats.forEach((c,i)=>{
+    const t=el('text',{x:X(i),y:bottom+20,'text-anchor':'middle','font-size':12.5,fill:INK});
+    t.textContent=c; svg.appendChild(t);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:Y(rf.v),y2:Y(rf.v),stroke:rf.color||MUTED,
+      'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-right-2,y:Y(rf.v)-7,'text-anchor':'end','font-size':12,fill:rf.color||MUTED,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  series.forEach((s,si)=>{
+    const col=s.color||(si===0?C1:C2);
+    const d=s.v.map((v,i)=>(i?'L':'M')+X(i)+' '+Y(v)).join(' ');
+    svg.appendChild(el('path',{d:d,fill:'none',stroke:col,'stroke-width':2.5,'stroke-linejoin':'round'}));
+    s.v.forEach((v,i)=>{
+      svg.appendChild(el('circle',{cx:X(i),cy:Y(v),r:6.5,fill:'#FCFCFB',stroke:col,'stroke-width':2.5}));
+      const g=el('circle',{cx:X(i),cy:Y(v),r:15,fill:'transparent'});
+      hook(g,`<b>${cats[i]} — ${s.name}</b><br>${opt.tipFmt?opt.tipFmt(v,i,s):fmt(v)}`);
+      svg.appendChild(g);
+    });
+    const lastX=X(s.v.length-1), lastY=Y(s.v[s.v.length-1]);
+    let dy=-16;
+    for(let k=0;k<si;k++){
+      const oy=Y(series[k].v[series[k].v.length-1]);
+      if(Math.abs(oy-lastY)<24) dy = (lastY>=oy) ? 24 : -16;
+    }
+    const t=el('text',{x:lastX,y:lastY+dy,'text-anchor':'end','font-size':13,fill:col,'font-weight':700});
+    t.textContent=opt.labFmt?opt.labFmt(s.v[s.v.length-1]):fmt(s.v[s.v.length-1]); svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+window.__charts={barH,barV,lines,fmt};
+const K1='#1B4F91', K2='#E35205', GREY='#B9BEC7';
+const PAL=['#1B4F91','#E35205','#5B8FCB','#B4531F'];
+const eur=v=>fmt(Math.round(v))+' €';
+const keur=v=>fmt(Math.round(v/1000))+' k€';
+
+document.getElementById('p-bench').innerHTML = D.bench.map(b=>
+  `<tr><td><strong>${b.nom}</strong></td><td class="n" style="font-weight:700">${b.v}</td><td style="font-size:13px;color:#666">${b.det}</td></tr>`).join('');
+
+/* fiches produit */
+D.produits.forEach(p=>{
+  const host=document.getElementById('p-'+p.id); if(!host)return;
+  const rows=p.an.map(a=>`<tr><td><strong>${a.a}</strong></td><td style="font-size:13px;color:#666">${a.det}</td>
+    <td class="n">${keur(a.ca)}</td><td class="n">${a.j} j</td>
+    <td class="n">${a.j?eur(a.ca/a.j):'—'}</td>
+    <td class="n"><strong>${a.marge!==undefined?keur(a.marge):(a.gain!==undefined?keur(a.gain):keur(a.ca))}</strong></td></tr>`).join('');
+  const colLast = p.an[0].marge!==undefined ? 'Marge sur coûts directs' : (p.an[0].gain!==undefined ? 'Gain net' : 'Contribution');
+  host.innerHTML = `
+    <p style="font-size:17px;color:#FF6600;font-weight:700;margin:0 0 10px;font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em">${p.sous}</p>
+    <p>${p.mecanique}</p>
+    <table>
+      <thead><tr><th>Année</th><th>Volume</th><th class="n">CA</th><th class="n">Jours mobilisés</th><th class="n">CA / jour</th><th class="n">${colLast}</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="box"><div class="t">Ce sur quoi ça s'appuie</div><p>${p.preuve}</p></div>
+    <p><strong>Investissement :</strong> ${p.invest}</p>
+    <p><strong>Risque principal :</strong> ${p.risque}</p>`;
+});
+
+/* hypothèses détaillées */
+document.getElementById('p-hyp').innerHTML = D.produits.map(p=>
+  `<h4>${p.nom}</h4><table><thead><tr><th>Hypothèse</th><th class="n">Valeur</th><th>Justification</th></tr></thead><tbody>`+
+  p.hyp.map(h=>`<tr><td>${h[0]}</td><td class="n"><strong>${h[1]}</strong></td><td style="font-size:13px;color:#666">${h[2]||'—'}</td></tr>`).join('')+
+  `</tbody></table>`).join('');
+
+/* contribution empilée -> barres groupées par année */
+(function(){
+  const noms=["comcoop","emi","ia","abo"], lab=["Licence Com'Coop®","EMI régional","Offre IA","Abonnement (gain net)"];
+  document.getElementById('p-contrib-legend').innerHTML =
+    lab.map((l,i)=>`<span><i style="background:${PAL[i]}"></i>${l}</span>`).join('');
+  const rows=[];
+  D.contribution.forEach(c=>{
+    noms.forEach((n,i)=>rows.push({k:c.a+' · '+lab[i], v:c[n], color:PAL[i],
+      tip:`<b>${c.a} — ${lab[i]}</b><br>${fmt(c[n])} k€`}));
+  });
+  barH('p-contrib', rows, {labelW:250, rowH:24, valFmt:r=>fmt(r.v)+' k€', tickFmt:v=>Math.round(v)+' k€'});
+})();
+
+/* scénarios */
+(function(){
+  const s=D.scenarios;
+  document.getElementById('p-sc-legend').innerHTML =
+    s.map((x,i)=>`<span><i style="background:${PAL[i]}"></i>${x.nom} — ${x.det}</span>`).join('');
+  lines('p-scenarios', ['An 1','An 2','An 3'],
+    s.map((x,i)=>({name:x.nom, v:[x.an1,x.an2,x.an3], color:PAL[i]})),
+    {h:320, min:0, max:1650, tickFmt:v=>Math.round(v)+' k€', labFmt:v=>fmt(v)+' k€',
+     tipFmt:(v)=>fmt(v)+' k€ de contribution nette'});
+})();
+
+/* CA par jour */
+barH('p-caj', D.caParJour.map(r=>({k:r.nom, v:r.v,
+  color: r.nom.indexOf('actuel')>=0?K2:K1,
+  tip:`<b>${r.nom}</b><br>${eur(r.v)} par jour produit`})),
+  {labelW:265, rowH:34, valFmt:r=>eur(r.v), tickFmt:v=>Math.round(v/1000)+' k€',
+   refs:[{v:1012, label:'prix jour actuel 1 012 €', color:GREY}]});
+
+document.getElementById('p-capa').innerHTML = D.capacite.map(c=>
+  `<tr><td><strong>${c.a}</strong></td><td class="n">${fmt(c.produits)} j</td><td class="n">${fmt(c.total)} j</td>
+   <td class="n"><strong>${c.part} %</strong></td></tr>`).join('');
+
+})();
+</script>
+</body>
+</html>

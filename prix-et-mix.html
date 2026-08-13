@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portail pilotage groupe — Analyse prix & mix</title>
+<style>
+:root{
+  --marine:#002D69; --orange:#FF6600; --gris:#3C3C3C; --gris-clair:#999999;
+  --serie1:#1B4F91; --serie2:#E35205; --grid:#E6E8EC; --surface:#FCFCFB;
+  --encadre:#F4F5F7; --bleu-pale:#A4BBD8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--gris);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+.wrap{max-width:980px;margin:0 auto;padding:0 28px 90px}
+h1,h2,h3,h4,.nar{font-family:"Arial Narrow",Arial,sans-serif}
+header.hero{border-bottom:3px solid var(--orange);padding:46px 0 26px;margin-bottom:34px}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);font-weight:700;margin:0 0 10px}
+h1{font-size:40px;line-height:1.12;color:var(--marine);margin:0 0 12px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--gris-clair);font-size:15px;margin:0}
+h2{font-size:27px;color:var(--marine);margin:56px 0 6px;font-weight:700;letter-spacing:-.005em;
+   padding-top:22px;border-top:1px solid var(--grid)}
+h2 .num{color:var(--orange);font-size:15px;display:block;letter-spacing:.14em;margin-bottom:6px;text-transform:uppercase}
+h3{font-size:19px;color:var(--orange);margin:34px 0 8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+h4{font-size:16px;color:var(--marine);margin:24px 0 6px;font-weight:700}
+p{margin:0 0 15px}
+strong{color:var(--marine);font-weight:700}
+em.src{font-style:normal;color:var(--gris-clair);font-size:13px}
+a{color:var(--serie1)}
+.lede{font-size:18px;line-height:1.6;color:var(--gris)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin:26px 0 6px}
+.tile{border:1px solid var(--grid);border-left:3px solid var(--orange);padding:15px 16px;background:#fff;border-radius:3px}
+.tile .v{font-family:"Arial Narrow",Arial,sans-serif;font-size:30px;font-weight:700;color:var(--marine);line-height:1.05}
+.tile .l{font-size:12.5px;color:var(--gris-clair);margin-top:5px;line-height:1.35}
+.tile.warn{border-left-color:var(--serie2)}
+.tile.ok{border-left-color:var(--serie1)}
+figure{margin:26px 0 8px;border:1px solid var(--grid);background:#fff;border-radius:3px;padding:18px 18px 10px}
+figcaption{font-size:13px;color:var(--gris-clair);margin-top:10px;line-height:1.45;border-top:1px solid var(--grid);padding-top:9px}
+.figtitle{font-family:"Arial Narrow",Arial,sans-serif;font-size:17px;font-weight:700;color:var(--marine);margin:0 0 2px}
+.figsub{font-size:13px;color:var(--gris-clair);margin:0 0 14px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--gris);margin:0 0 12px}
+.legend i{width:11px;height:11px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
+.box{background:var(--encadre);border-left:3px solid var(--marine);padding:16px 20px;margin:24px 0;border-radius:0 3px 3px 0}
+.box.alert{border-left-color:var(--serie2);background:#FDF3EE}
+.box p:last-child{margin-bottom:0}
+.box .t{font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;color:var(--marine);font-size:15px;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:20px 0}
+th{text-align:left;font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;text-transform:uppercase;
+   letter-spacing:.05em;color:var(--marine);border-bottom:2px solid var(--marine);padding:8px 10px 7px}
+td{padding:8px 10px;border-bottom:1px solid var(--grid)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr:hover td{background:#FAFBFC}
+.tag{display:inline-block;font-size:11.5px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:.03em}
+.tag.up{background:#E8F0F9;color:var(--serie1)} .tag.down{background:#FBEAE2;color:var(--serie2)}
+.tag.flat{background:#F0F1F3;color:var(--gris-clair)}
+ol.axes{list-style:none;counter-reset:ax;padding:0;margin:26px 0}
+ol.axes>li{counter-increment:ax;position:relative;padding:18px 0 18px 62px;border-bottom:1px solid var(--grid)}
+ol.axes>li::before{content:counter(ax);position:absolute;left:0;top:16px;width:42px;height:42px;border-radius:50%;
+  background:var(--marine);color:#fff;font-family:"Arial Narrow",Arial,sans-serif;font-size:21px;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+ol.axes>li .ax-t{font-family:"Arial Narrow",Arial,sans-serif;font-size:20px;font-weight:700;color:var(--marine);margin-bottom:2px}
+ol.axes>li .ax-m{font-size:12.5px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.tip{position:fixed;pointer-events:none;background:var(--marine);color:#fff;font-size:12.5px;padding:7px 10px;
+  border-radius:3px;opacity:0;transition:opacity .12s;z-index:99;line-height:1.45;white-space:nowrap}
+details{margin:14px 0;border:1px solid var(--grid);border-radius:3px;background:#fff}
+summary{cursor:pointer;padding:11px 15px;font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;
+  color:var(--marine);font-size:15px;text-transform:uppercase;letter-spacing:.04em}
+details[open] summary{border-bottom:1px solid var(--grid)}
+details .in{padding:4px 15px 12px}
+footer{margin-top:60px;padding-top:22px;border-top:3px solid var(--orange);font-size:13px;color:var(--gris-clair)}
+@media(max-width:640px){h1{font-size:30px}h2{font-size:22px}.wrap{padding:0 16px 60px}}
+
+.codirnav{background:#002D69;position:sticky;top:0;z-index:50}
+.codirnav .in{max-width:1050px;margin:0 auto;padding:0 28px;display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+.codirnav a{font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+  color:#A8BDD8;text-decoration:none;padding:11px 12px;font-weight:700;border-bottom:3px solid transparent}
+.codirnav a:hover{color:#fff}
+.codirnav a.home{color:#fff}
+.codirnav a.on{color:#fff;border-bottom-color:#FF6600}
+.codirnav a.suivi{margin-left:auto;color:#FF9B4D}
+.codirnav a.suivi:hover{color:#FF6600}
+@media(max-width:700px){.codirnav .in{padding:0 14px}.codirnav a{padding:9px 8px;font-size:12px}}
+</style>
+</head>
+<body>
+<nav class="codirnav"><div class="in"><a class="home" href="index.html">&#8962; CODIR</a><a href="diagnostic.html">Diagnostic</a><a href="prix-et-mix.html" class="on">Prix & mix</a><a href="produits.html">4 produits</a><a href="comcoop.html">ComCoop®</a><a href="benchmark.html">Benchmark</a><a class="suivi" href="codir.html">Suivi &#8599;</a></div></nav>
+<div class="tip" id="tip"></div>
+<div class="wrap">
+
+<header class="hero">
+  <p class="kicker">Portail pilotage groupe · Analyse</p>
+  <h1>Prix &amp; mix</h1>
+  <p class="sub">Ce qui fait vraiment baisser le prix de journée — OPTA-S 2022-2026<br>
+  Source : Odoo <code>is.activite</code>, même base que l'atterrissage du portail · version corrigée du 12/08/2026</p>
+</header>
+
+<p class="lede">Le chiffre d'affaires d'OPTA-S est stable depuis 2023 autour de 2,3 à 2,4 M€, alors que
+<strong>les jours produits ont augmenté de 25 %</strong>. L'explication tient presque entièrement à
+<strong>un seul compte</strong>. Cette page isole ce compte, puis mesure ce qui reste une fois qu'il est retiré —
+et ce qui reste est beaucoup plus sain que la moyenne ne le laisse croire.</p>
+
+<div class="tiles">
+  <div class="tile warn"><div class="v">1 012 €</div><div class="l">prix jour 2025, contre 1 204 € en 2023 — le point bas de cinq ans</div></div>
+  <div class="tile warn"><div class="v">+464 j</div><div class="l">jours produits en plus entre 2023 et 2025, pour +110 k€ de CA seulement</div></div>
+  <div class="tile warn"><div class="v">450 k€</div><div class="l">manque à gagner 2025 si le prix de 2023 avait tenu</div></div>
+  <div class="tile warn"><div class="v">721 €</div><div class="l">prix jour EUROGROUP 2025, contre 1 149 € en 2022 — 21 % de nos jours</div></div>
+  <div class="tile ok"><div class="v">1 163 €</div><div class="l">prix jour 2026 <strong>hors EUROGROUP</strong> — en hausse, pas en baisse</div></div>
+  <div class="tile"><div class="v">60 %</div><div class="l">taux de charge annuel OPTA-S 2026 (source portail)</div></div>
+</div>
+
+<h2><span class="num">Note de méthode</span>Une seule source, alignée sur le portail</h2>
+
+<p>Tous les chiffres de cette page viennent d'<strong>Odoo, modèle <code>is.activite</code></strong>, activités facturables,
+agrégées par <strong>date d'activité</strong> — c'est-à-dire par exercice réel, et non par année de création de l'affaire.
+C'est exactement la base du portail de pilotage groupe : le CA 2025 y ressort à <strong>2 372 677 €</strong>, identique au chiffre
+affiché sur l'accueil du portail. Toute analyse antérieure faite sur <code>is.affaire</code> par année de création
+décrivait des cohortes d'affaires, pas des exercices, et doit être écartée.</p>
+
+<h2><span class="num">Constat 1</span>Le ciseau : plus de jours, moins de prix, même chiffre d'affaires</h2>
+
+<figure>
+  <p class="figtitle">Jours produits et prix de journée, 2022-2025</p>
+  <p class="figsub">Base 100 en 2022, exercices pleins 2022-2025. Les deux courbes se croisent en 2024.</p>
+  <div class="legend"><span><i style="background:#1B4F91"></i>Jours produits</span>
+  <span><i style="background:#E35205"></i>Prix de journée</span></div>
+  <div id="k-ciseau"></div>
+  <figcaption>Odoo <code>is.activite</code>. L'exercice 2026, partiel au 10/08, est exclu de ce graphique :
+  son volume n'est pas comparable à une année pleine. Il figure dans le tableau ci-dessous.</figcaption>
+</figure>
+
+<table>
+  <thead><tr><th>Exercice</th><th class="n">CA facturable</th><th class="n">Jours produits</th><th class="n">Prix jour</th></tr></thead>
+  <tbody id="k-serie"></tbody>
+</table>
+
+<div class="box alert">
+  <div class="t">Décomposition prix / volume, 2023 → 2025</div>
+  <p>C'est la seule façon rigoureuse de lire l'écart. Entre 2023 et 2025, nous avons produit
+  <strong>464 jours de plus</strong>. Au prix de 2023 (1 204 €), ces jours auraient rapporté
+  <strong>+558 k€</strong>. Dans le même temps, la baisse du prix moyen (de 1 204 € à 1 012 €) appliquée aux
+  2 344 jours de 2025 a coûté <strong>−450 k€</strong>. Solde : <strong>+108 k€</strong> de chiffre d'affaires
+  pour un quart de production supplémentaire.</p>
+  <p>Autrement dit : <strong>l'effort de volume a été réel et il a été presque intégralement annulé par le prix.</strong>
+  Reste à savoir où le prix a cédé — et la réponse n'est pas celle qu'on croit.</p>
+</div>
+
+<div class="box">
+  <div class="t">Un calcul qu'il ne faut PAS faire</div>
+  <p>Il est tentant de diviser le gain de chiffre d'affaires par le gain de jours pour obtenir un « prix marginal ».
+  Sur les collectivités, cela donnerait 237 k€ ÷ 464 jours = <strong>511 € par jour</strong>, et l'on en conclurait que
+  les jours conquis ont été vendus à perte. <strong>Ce raisonnement est faux.</strong> Ce ratio mélange deux effets :
+  le prix des jours nouveaux, et la baisse de prix subie sur les jours déjà existants. Ce n'est pas un prix de vente,
+  c'est un solde. Les jours réellement nouveaux ont été vendus bien au-dessus — la section suivante le démontre client
+  par client.</p>
+</div>
+
+<h2><span class="num">Constat 2</span>Ce ne sont pas « les collectivités » : c'est EUROGROUP</h2>
+
+<figure>
+  <p class="figtitle">Prix de journée par secteur, 2022-2026</p>
+  <p class="figsub">Euros par jour.</p>
+  <div class="legend" id="k-sec-legend"></div>
+  <div id="k-secteurs"></div>
+  <figcaption>Odoo. Les secteurs sous 80 jours cumulés sont exclus. « Autres secteurs » regroupe le privé et
+  l'associatif — c'est aujourd'hui notre meilleur prix, à 1 458 € en 2026.</figcaption>
+</figure>
+
+<p>Vu de loin, le segment collectivités s'effondre : <strong>1 298 € en 2022, 823 € en 2025</strong>, avec un volume
+multiplié par 2,5. Décomposé, il ne reste presque rien de ce récit.</p>
+
+<figure>
+  <p class="figtitle">Le segment collectivités, décomposé</p>
+  <p class="figsub">Prix de journée. Deux comptes expliquent la totalité de la chute.</p>
+  <div class="legend" id="k-col-legend"></div>
+  <div id="k-coldetail"></div>
+  <figcaption>Odoo <code>is.activite</code>. EUROGROUP Consulting est rattaché au secteur « Collectivités locales »
+  dans Odoo : sa dérive tarifaire est donc imputée à ce segment.</figcaption>
+</figure>
+
+<p><strong>Une fois EUROGROUP et le Conseil régional de Bourgogne-Franche-Comté retirés, le prix des collectivités est de
+1 351 € en 2022, 1 186 € en 2025 et 1 263 € en 2026</strong> — sur un volume stable de 164 à 198 jours. Ce n'est pas un
+effondrement, c'est une érosion de 6 % en quatre ans, déjà en cours de rattrapage.</p>
+
+<div class="box">
+  <div class="t">La preuve par les clients nouveaux</div>
+  <p>Si nous avions bradé pour conquérir du volume, les clients entrés depuis 2022 seraient les moins chers.
+  C'est l'inverse. Les <strong>8 clients collectivités présents en 2025 et absents en 2022</strong> représentent
+  <strong>111 jours vendus à 1 039 € en moyenne</strong>. Pendant ce temps, les 5 clients présents aux deux dates sont
+  passés de <strong>164 jours à 1 209 €</strong> à <strong>645 jours à 773 €</strong>.</p>
+  <p><strong>Nous n'avons pas acheté de nouveaux clients au rabais. Nous avons laissé glisser le prix sur des comptes
+  existants, en les laissant grossir.</strong> Ce n'est pas le même problème, et ce n'est pas le même remède : la
+  conquête n'est pas en cause, la gestion de compte l'est.</p>
+</div>
+
+<h2><span class="num">Constat 3</span>Retirez un client, et la courbe change de sens</h2>
+
+<figure>
+  <p class="figtitle">EUROGROUP Consulting : de 3 % à 25 % de nos jours, à prix décroissant</p>
+  <p class="figsub">Jours produits en barres ; prix de journée annoté sous chaque année.</p>
+  <div id="k-eurogroup"></div>
+  <figcaption>Odoo. EUROGROUP prélève en outre une commission de portage d'environ 10 % sur ce chiffre d'affaires.</figcaption>
+</figure>
+
+<p>EUROGROUP est passé de <strong>48 jours en 2022 à 515 en 2024</strong>, et son prix de <strong>1 149 € à 721 €</strong>.
+Après commission de portage, le prix net revient autour de <strong>650 €</strong> — frais de déplacement réunionnais
+compris, puisque 79 % de nos jours sont vendus frais inclus. C'est notre premier client en volume et notre dernier en prix.</p>
+
+<figure>
+  <p class="figtitle">OPTA-S avec et sans EUROGROUP</p>
+  <p class="figsub">Prix de journée, euros.</p>
+  <div class="legend"><span><i style="background:#1B4F91"></i>Tout le portefeuille</span>
+  <span><i style="background:#E35205"></i>Hors EUROGROUP</span></div>
+  <div id="k-horseg"></div>
+  <figcaption>Odoo. Hors EUROGROUP, le volume est stable (1 737 jours en 2022, 1 861 en 2025) et le prix remonte
+  depuis 2024.</figcaption>
+</figure>
+
+<div class="box alert">
+  <div class="t">Le vrai périmètre du problème</div>
+  <p>Hors EUROGROUP, le prix de journée fait <strong>1 194 € (2022), 1 214 € (2023), 1 055 € (2024), 1 088 € (2025),
+  1 163 € (2026)</strong>. L'érosion existe — elle est de 10 % entre 2023 et 2025 — mais <strong>elle est déjà en train
+  de se corriger</strong>, et le volume hors EUROGROUP n'a quasiment pas bougé : 1 737 jours en 2022, 1 861 en 2025.</p>
+  <p>La conclusion change complètement. Le groupe ne s'est pas engagé dans une guerre des prix généralisée pour conquérir
+  du volume. <strong>Un seul compte de portage a absorbé toute la croissance de volume à un prix qui a baissé de 37 %</strong>,
+  et il tire seul la moyenne du cabinet vers le bas.</p>
+</div>
+
+<figure>
+  <p class="figtitle">Prix de journée par client, 2022-2026</p>
+  <p class="figsub">Clients de plus de 120 jours cumulés, présents sur les cinq exercices. Euros par jour.</p>
+  <div class="legend" id="k-cli-legend"></div>
+  <div id="k-clients"></div>
+  <figcaption>Odoo, par date d'activité. OPCO ATLAS (arrivé en 2025, 1 482 puis 1 546 €/j) et SGP (intragroupe,
+  31 à 114 €/j) sont écartés de ce graphique faute d'historique continu — ils figurent dans le tableau de données.</figcaption>
+</figure>
+
+<div class="box alert">
+  <div class="t">SGP consomme 287 jours de production, pas zéro</div>
+  <p>OPTA-S a produit <strong>157 jours en 2024 et 130 jours en 2025</strong> facturés à SGP <strong>31 et 33 € par
+  jour</strong> — soit 9 100 € pour 287 jours. Valorisés au prix moyen d'OPTA-S, ces jours représentent
+  <strong>environ 290 000 € de production transférée</strong> sur deux exercices, au bénéfice d'une entité dont
+  l'atterrissage 2026 est de 13 k€.</p>
+  <p>Ce n'est pas un jugement sur l'utilité de SGP, c'est une clarification comptable : SGP n'est pas une filiale à
+  l'équilibre qui stagne, c'est une activité financée par la capacité de production d'OPTA-S.</p>
+</div>
+
+<h2><span class="num">Constat 4</span>Le canal : nous avons remplacé du direct par de l'accord-cadre</h2>
+
+<figure>
+  <p class="figtitle">Prix de journée par canal de vente, 2022-2026</p>
+  <p class="figsub">Euros par jour.</p>
+  <div class="legend" id="k-can-legend"></div>
+  <div id="k-canaux"></div>
+  <figcaption>Odoo. Le volume de chaque canal figure dans l'infobulle et dans le tableau de données.</figcaption>
+</figure>
+
+<p>L'accord-cadre est passé de <strong>305 jours en 2022 à 1 074 en 2025</strong> — de 17 % à 46 % de notre production —
+à un prix qui glisse de 1 146 € à 1 027 €. Le devis sans formalité, lui, tient son prix entre 1 148 € et 1 293 € sur
+cinq ans, mais son volume recule de 767 à 610 jours.</p>
+
+<p><strong>Nous avons donc substitué, journée pour journée, du direct à 1 250 € par de l'accord-cadre à 1 030 €.</strong>
+C'est un choix rationnel à court terme — l'accord-cadre sécurise le carnet — mais il a un prix mesurable, et le marché
+va dans le sens d'une aggravation : fractionnement des commandes de l'État, multi-attribution généralisée, CNFPT amputé
+de 10 % de son budget.</p>
+
+<h2><span class="num">Constat 5</span>Le prix ne dépend pas que du client : il dépend de qui produit</h2>
+
+<figure>
+  <p class="figtitle">Prix jour réel et carnet de fin d'année, par consultant</p>
+  <p class="figsub">Prix jour 2026 (CA facturable ÷ jours réalisés) en barres ; carnet août-décembre en jours annoté.</p>
+  <div id="k-pj"></div>
+  <figcaption>Source : portail de pilotage groupe, page ACR, mise à jour du 12/08/2026.
+  P.-H. Hamburger est à mi-temps (plafond de 10 jours par mois).</figcaption>
+</figure>
+
+<p>L'écart entre le prix jour le plus haut et le plus bas est de <strong>519 €</strong>. Et il n'est pas corrélé à la charge :
+les deux plus gros carnets de fin d'année appartiennent à <strong>Nicolas-Henri Antheaume (925 €/j, 71,5 jours)</strong> et
+Raphaël Gaiffe (1 142 €/j, 70,75 jours), quand Laurent Adam, le mieux valorisé à 1 444 €, en porte 62,75.
+<strong>Le consultant le plus chargé est le moins bien valorisé.</strong> À prix jour égal à celui de Bessin, le seul carnet
+de fin d'année d'Antheaume vaudrait 28 000 € de plus.</p>
+
+<figure>
+  <p class="figtitle">Taux de charge mensuel 2026</p>
+  <p class="figsub">Pourcentage. Moyenne annuelle 60 %.</p>
+  <div id="k-charge"></div>
+  <figcaption>Source : portail de pilotage groupe, page ACR. Réalisé Odoo de janvier à juillet, réalisé + planifié
+  agendas d'août à décembre.</figcaption>
+</figure>
+
+<p>La saisonnalité est brutale : <strong>93 % en juin, 36 % en juillet, 14 % en août, 50 % en décembre</strong>.
+Les creux de juillet-août et de décembre représentent, à eux seuls, plusieurs centaines de jours de capacité non vendue.
+Un lissage même partiel vaut plus que n'importe quelle négociation tarifaire.</p>
+
+<h2><span class="num">Constat 6</span>Le groupe, remis à plat</h2>
+
+<table>
+  <thead><tr><th>Indicateur</th><th class="n">OPTA-S</th><th class="n">INTERFACE</th><th class="n">SGP</th><th class="n">Groupe</th></tr></thead>
+  <tbody id="k-groupe"></tbody>
+</table>
+
+<p>Trois trajectoires opposées. <strong>OPTA-S recule de 12,1 %</strong> avec un taux de charge de 60 %.
+<strong>INTERFACE progresse de 14,3 %</strong> — c'est la seule entité en croissance, et elle y arrive en réduisant
+son volume et en remontant son prix, exactement l'inverse de ce qu'a fait OPTA-S. <strong>SGP s'effondre de 90 %</strong>,
+avec pourtant 1 100 k€ d'offres en cours : l'écart entre son pipeline et son réalisé est le plus anormal du groupe.</p>
+
+<div class="box">
+  <div class="t">Ce que ces chiffres imposent comme priorité</div>
+  <p>La question n'est plus « comment augmenter nos prix » — c'est un vœu pieux quand le marché fixe le prix avant nous.
+  Elle est : <strong>« pourquoi produisons-nous 2 344 jours pour le même chiffre d'affaires que 1 880 jours il y a deux ans,
+  et qu'est-ce qu'on arrête ? »</strong></p>
+  <p>Les trois réponses mesurées : les collectivités en concurrence ouverte (511 € de CA marginal par jour),
+  le portage EUROGROUP à 721 € brut de commission, et les 287 jours donnés à SGP. Ensemble, ces trois postes
+  représentent plus de 1 200 jours de production annuelle vendus en dessous de notre moyenne.</p>
+</div>
+
+<h2><span class="num">La question</span>Comment remonter les prix quand on perd déjà 40 % des AO sur le prix</h2>
+
+<p>Le constat est exact : sur les pertes documentées où la notation est connue, <strong>le prix explique environ
+13 dossiers sur 31</strong>, soit 42 %. Augmenter le barème reviendrait à en perdre davantage. Mais l'analyse ci-dessus
+déplace la question, parce que <strong>les jours qui tirent le prix vers le bas ne sont pas des jours gagnés sur appel
+d'offres</strong>.</p>
+
+<p>EUROGROUP à 721 €, le Conseil régional de Bourgogne à 738 €, SGP à 33 € : ce sont des relations bilatérales, hors
+compétition, où le prix a glissé au fil des reconductions. Ensemble, elles représentent <strong>733 jours en 2025</strong>,
+soit 31 % de la production. <strong>Il n'y a aucun appel d'offres à perdre en les renégociant.</strong></p>
+
+<h3>Cinq leviers, du moins risqué au plus structurant</h3>
+
+<p><strong>1. Sortir les frais du prix jour.</strong> 79 % de nos jours sont vendus « frais inclus », contre 5 % en
+« réel plafonné ». Or les régimes où les frais sont facturés à part se vendent <strong>1 175 à 1 200 € contre 1 106 €</strong>
+en frais inclus. Basculer les missions à déplacement vers le réel plafonné, c'est récupérer <strong>70 à 95 € par jour</strong>
+sans toucher au barème — et <em>baisser</em> le prix affiché au bordereau, donc améliorer la note prix. C'est le seul levier
+qui monte la marge et la compétitivité en même temps. Il est particulièrement décisif sur La Réunion, où le déplacement
+est structurel.</p>
+
+<p><strong>2. Renégocier les trois comptes bilatéraux.</strong> Sur EUROGROUP, 316 jours sont déjà programmés en 2026 à
+795 € : <strong>chaque tranche de 100 € regagnée vaut 32 k€ par an</strong>. Le rapport de force n'est pas nul — ils ont le
+savoir-faire de la proposition, nous avons la présence locale qu'ils n'ont pas. Le Conseil régional de Bourgogne est déjà
+remonté seul à 1 291 € en 2026 : la preuve que ces prix ne sont pas des fatalités de marché.</p>
+
+<p><strong>3. Ne pas remonter les prix en appel d'offres — changer de terrain.</strong> Les pertes sur le prix se
+concentrent là où la technique est à parité : Région Sud PACA (45/60 des deux côtés), Alsace (prix identique à l'euro
+près), CD Deux-Sèvres (57,5/60 en technique, battu par un prix inférieur de 35 %). Quand l'offre est comparable ligne à
+ligne, le prix décide, et nous ne gagnerons pas ce jeu contre un concurrent qui achète sa journée-formateur à un tiers de
+notre coût. La réponse n'est pas de baisser plus : c'est de ne pas concourir là où la seule variable est le prix.</p>
+
+<p><strong>4. Vendre autre chose qu'un jour.</strong> Un forfait ne se compare pas à un tarif journalier. L'EMI se vend
+<strong>49 900 € nets tout compris</strong> avec un coût marginal nul du 9<sup>e</sup> au 16<sup>e</sup> stagiaire ; un module
+e-learning ne se facture pas au jour ; une offre d'IA encore moins. Chaque euro vendu hors unité-jour est un euro qui
+échappe mécaniquement à la comparaison.</p>
+
+<p><strong>5. Réserver le prix bas au remplissage des creux.</strong> Le taux de charge est de 60 % en moyenne, mais de
+36 % en juillet, 14 % en août et 50 % en décembre. Une journée vendue à 800 € en août vaut mieux qu'une journée non
+vendue. Une journée vendue à 800 € en juin, quand on est à 93 %, coûte une journée à 1 300 €. <strong>Le prix plancher
+doit être une décision de calendrier, pas une politique.</strong></p>
+
+<div class="box">
+  <div class="t">L'ordre de grandeur</div>
+  <p>Ces cinq leviers ne demandent aucune hausse de barème et ne mettent en jeu aucun appel d'offres.
+  Sur les seuls comptes bilatéraux et le régime de frais, <strong>l'ordre de grandeur récupérable est de 100 à 150 k€
+  par an</strong> — à comparer aux 450 k€ que la baisse de prix a coûté en 2025. Le reste se joue sur le mix, c'est-à-dire
+  sur ce que l'on cesse de vendre.</p>
+</div>
+
+<details>
+  <summary>Tableaux de données</summary>
+  <div class="in">
+    <h4>Prix de journée par secteur</h4>
+    <div id="k-t-secteurs"></div>
+    <h4>Prix de journée par canal</h4>
+    <div id="k-t-canaux"></div>
+    <h4>Prix de journée par client</h4>
+    <div id="k-t-clients"></div>
+    <p><em class="src">* 2026 : exercice partiel arrêté au 10/08/2026.</em></p>
+  </div>
+</details>
+
+
+<footer>
+  <p><strong>Périmètre et limites.</strong> Périmètre OPTA-S pour les séries 2022-2026 ; les chiffres groupe de la
+  partie 6 proviennent du portail de pilotage. Les activités marquées « non facturable » dans Odoo sont exclues.
+  L'exercice 2026 est partiel, arrêté au 10/08/2026, et n'est pas comparable en volume aux exercices pleins.
+  Les prix jour sont majoritairement <strong>frais compris</strong> : 79 % des jours sont vendus sous le régime
+  « frais inclus », ce qui minore le prix sec d'environ 6 à 8 %. Aucun coût de revient par journée-consultant n'étant
+  disponible, ce document ne conclut jamais qu'une prestation est vendue « à perte ».</p>
+  <p>OPTA-S — <em>« Vers une performance durable &amp; solidaire »</em></p>
+</footer>
+</div>
+<script>
+/* Source unique : Odoo is.activite, activités facturables, par date d'activité.
+   Même base que le portail groupe (CA réel 2025 = 2 372 677 €, identique). Extraction du 12/08/2026. */
+const D = {
+  serie: [
+    { an:"2022", ca:2129329, j:1785, tjm:1193 },
+    { an:"2023", ca:2263165, j:1880, tjm:1204 },
+    { an:"2024", ca:2403634, j:2322, tjm:1035 },
+    { an:"2025", ca:2372677, j:2344, tjm:1012 },
+    { an:"2026*", ca:1332265, j:1246, tjm:1070 }
+  ],
+  secteurs: [
+    { nom:"Collectivités locales", s:[{an:"2022",tjm:1298,j:304},{an:"2023",tjm:1253,j:474},{an:"2024",tjm:1007,j:678},{an:"2025",tjm:823,j:768},{an:"2026*",tjm:907,j:414}] },
+    { nom:"Protection sociale",    s:[{an:"2022",tjm:1197,j:880},{an:"2023",tjm:1229,j:924},{an:"2024",tjm:1144,j:880},{an:"2025",tjm:1119,j:797},{an:"2026*",tjm:1072,j:408}] },
+    { nom:"Autres secteurs",       s:[{an:"2022",tjm:960,j:184},{an:"2023",tjm:786,j:112},{an:"2024",tjm:559,j:301},{an:"2025",tjm:1080,j:507},{an:"2026*",tjm:1458,j:188}] },
+    { nom:"Mutualité sociale agricole", s:[{an:"2022",tjm:1229,j:188},{an:"2023",tjm:1183,j:169},{an:"2024",tjm:1120,j:311},{an:"2025",tjm:1076,j:131},{an:"2026*",tjm:1166,j:49}] },
+    { nom:"Sécurité sociale",      s:[{an:"2022",tjm:1168,j:162},{an:"2023",tjm:1219,j:170},{an:"2024",tjm:1340,j:110},{an:"2025",tjm:1105,j:77},{an:"2026*",tjm:1309,j:63}] }
+  ],
+  canaux: [
+    { nom:"Accord-cadre",         s:[{an:"2022",tjm:1146,j:305},{an:"2023",tjm:1155,j:495},{an:"2024",tjm:1046,j:894},{an:"2025",tjm:1027,j:1074},{an:"2026*",tjm:1005,j:514}] },
+    { nom:"Devis sans formalité", s:[{an:"2022",tjm:1249,j:767},{an:"2023",tjm:1293,j:581},{an:"2024",tjm:1148,j:740},{an:"2025",tjm:1169,j:610},{an:"2026*",tjm:1184,j:446}] },
+    { nom:"Marché subséquent",    s:[{an:"2022",tjm:1171,j:324},{an:"2023",tjm:1257,j:391},{an:"2024",tjm:1225,j:167},{an:"2025",tjm:1208,j:173},{an:"2026*",tjm:1149,j:74}] },
+    { nom:"Appel d'offres ouvert",s:[{an:"2022",tjm:1162,j:276},{an:"2023",tjm:1159,j:276},{an:"2024",tjm:1061,j:191},{an:"2025",tjm:829,j:189},{an:"2026*",tjm:1335,j:52}] }
+  ],
+  eurogroup: [
+    { an:"2022", j:48,  tjm:1149, partJ:3 },
+    { an:"2023", j:317, tjm:1155, partJ:17 },
+    { an:"2024", j:515, tjm:967,  partJ:22 },
+    { an:"2025", j:482, tjm:721,  partJ:21 },
+    { an:"2026*",j:316, tjm:795,  partJ:25 }
+  ],
+  collectivites: [
+    { an:"2022", j:304, partJ:17, tjm:1298 },
+    { an:"2023", j:474, partJ:25, tjm:1253 },
+    { an:"2024", j:678, partJ:29, tjm:1007 },
+    { an:"2025", j:768, partJ:33, tjm:823 },
+    { an:"2026*",j:414, partJ:33, tjm:907 }
+  ],
+  sgp: [
+    { an:"2022", j:24,  ca:2722, tjm:114 },
+    { an:"2023", j:34,  ca:3847, tjm:114 },
+    { an:"2024", j:157, ca:4842, tjm:31 },
+    { an:"2025", j:130, ca:4261, tjm:33 },
+    { an:"2026*",j:0,   ca:0,    tjm:0 }
+  ],
+  clients: [
+    { nom:"EN3S", tot:2131, s:[1157,1227,1143,1137,1132], j:[487,528,542,392,182] },
+    { nom:"EUROGROUP Consulting", tot:1678, s:[1149,1155,967,721,795], j:[48,317,515,482,316] },
+    { nom:"CAF des Hauts-de-Seine", tot:567, s:[811,826,883,865,653], j:[91,127,124,145,82] },
+    { nom:"OPCO ATLAS", tot:488, s:[null,null,null,1482,1546], j:[0,0,0,328,161] },
+    { nom:"Conseil régional Bourgogne-FC", tot:345, s:[1238,1226,1097,738,1291], j:[58,91,62,121,12] },
+    { nom:"SGP (intragroupe)", tot:345, s:[114,114,31,33,null], j:[24,34,157,130,0] },
+    { nom:"ASFOSAR", tot:171, s:[1245,1250,1250,1250,1250], j:[84,25,29,23,10] },
+    { nom:"CAF de Seine-Maritime", tot:140, s:[1233,1351,1293,1248,1092], j:[27,30,40,32,12] }
+  ],
+  intervenants: [
+    { nom:"BESSIN Christophe", s:[1381,1357,1311,1186,1319], j:[147,173,169,208,135] },
+    { nom:"GAIFFE Raphaël",    s:[1202,1255,1155,1161,1142], j:[162,178,173,191,116] },
+    { nom:"TATU Stéphane",     s:[1308,1313,1277,934,1126],  j:[154,158,160,208,105] },
+    { nom:"ADAM Laurent",      s:[1192,1257,1234,1279,1444], j:[127,151,145,161,77] }
+  ],
+  charge2026: [
+    {m:"Janv",t:62},{m:"Févr",t:54},{m:"Mars",t:67},{m:"Avr",t:62},{m:"Mai",t:71},{m:"Juin",t:93},
+    {m:"Juil",t:36},{m:"Août",t:14},{m:"Sept",t:80},{m:"Oct",t:68},{m:"Nov",t:68},{m:"Déc",t:50}
+  ],
+  pjConsultants: [
+    {nom:"ADAM Laurent",pj:1444,carnet:62.75},{nom:"BESSIN Christophe",pj:1319,carnet:68},
+    {nom:"BENALOUACHE Mounir",pj:1218,carnet:32},{nom:"MARCADET Leia",pj:1212,carnet:70.75},
+    {nom:"ECONOMIDES Dimitrios",pj:1147,carnet:32.25},{nom:"GAIFFE Raphaël",pj:1142,carnet:70.75},
+    {nom:"TATU Stéphane",pj:1126,carnet:55.5},{nom:"HAMBURGER Pierre-Henri",pj:973,carnet:19.5},
+    {nom:"TATU Eloi",pj:942,carnet:67},{nom:"ANTHEAUME Nicolas-Henri",pj:925,carnet:71.5}
+  ],
+  groupe: {
+    caGroupe2026:2970, caGroupe2025:3272, tendance:-9.2, pipeline:3632, vendu2026:2226,
+    entites:[
+      {nom:"OPTA-S",    att:2086, reel:2373, evo:-12.1, charge:60, pipe:968,  vendu:1869},
+      {nom:"INTERFACE", att:870,  reel:762,  evo:14.3,  charge:40, pipe:1564, vendu:303},
+      {nom:"SGP",       att:13,   reel:137,  evo:-90.3, charge:null, pipe:1100, vendu:54}
+    ]
+  },
+  horsEG: [
+    { an:"2022", ca:2074502, j:1737, tjm:1194 },
+    { an:"2023", ca:1896973, j:1563, tjm:1214 },
+    { an:"2024", ca:1905866, j:1807, tjm:1055 },
+    { an:"2025", ca:2025096, j:1861, tjm:1088 },
+    { an:"2026*",ca:1080850, j:929,  tjm:1163 }
+  ],
+  collectDetail: [
+    { nom:"Collectivités — total",              s:[{an:"2022",tjm:1298,j:304},{an:"2023",tjm:1253,j:474},{an:"2024",tjm:1007,j:678},{an:"2025",tjm:823,j:768},{an:"2026*",tjm:907,j:414}] },
+    { nom:"dont EUROGROUP",                     s:[{an:"2022",tjm:1149,j:48},{an:"2023",tjm:1183,j:252},{an:"2024",tjm:914,j:447},{an:"2025",tjm:721,j:482},{an:"2026*",tjm:795,j:316}] },
+    { nom:"dont CR Bourgogne-FC",               s:[{an:"2022",tjm:1238,j:58},{an:"2023",tjm:1226,j:91},{an:"2024",tjm:1097,j:62},{an:"2025",tjm:738,j:121},{an:"2026*",tjm:1291,j:12}] },
+    { nom:"Collectivités hors ces deux comptes",s:[{an:"2022",tjm:1351,j:198},{an:"2023",tjm:1411,j:130},{an:"2024",tjm:1219,j:169},{an:"2025",tjm:1186,j:164},{an:"2026*",tjm:1263,j:86}] }
+  ],
+  decompo: { volume:558000, prix:-450000, net:108000, jSup:464, prix2023:1204, prix2025:1012, j2025:2344 },
+  clientsCollect: { existants22:{j:164,p:1209}, existants25:{j:645,p:773}, nouveaux25:{j:111,p:1039} },
+  manqueAGagner: 450000
+};
+
+</script>
+<script>
+(function(){
+const M={t:26,r:20,b:34,l:0}, C1='#1B4F91', C2='#E35205', GRID='#E6E8EC', INK='#3C3C3C', MUTED='#999999';
+const tip=document.getElementById('tip');
+const fmt=n=>n.toLocaleString('fr-FR');
+const el=(t,a={})=>{const e=document.createElementNS('http://www.w3.org/2000/svg',t);
+  for(const k in a)e.setAttribute(k,a[k]);return e;};
+function hook(node,html){
+  node.style.cursor='default';
+  node.addEventListener('mousemove',e=>{tip.innerHTML=html;tip.style.opacity=1;
+    let x=e.clientX+14,y=e.clientY-10;
+    if(x+tip.offsetWidth>window.innerWidth-8)x=e.clientX-tip.offsetWidth-14;
+    tip.style.left=x+'px';tip.style.top=y+'px';});
+  node.addEventListener('mouseleave',()=>{tip.style.opacity=0;});
+}
+function mount(id){const h=document.getElementById(id);if(!h)return null;return h;}
+
+/* ---------- barres horizontales ---------- */
+function barH(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900, rowH=opt.rowH||30, labelW=opt.labelW||250, pad=12;
+  const H=M.t+rows.length*rowH+M.b;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.02;
+  const plotW=W-labelW-90;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  // grille
+  const ticks=opt.ticks||4;
+  for(let i=0;i<=ticks;i++){
+    const v=max*i/ticks, x=labelW+plotW*i/ticks;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-8,y2:M.t+rows.length*rowH,stroke:GRID,'stroke-width':1}));
+    const tx=el('text',{x:x,y:M.t+rows.length*rowH+18,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+    tx.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(tx);
+  }
+  rows.forEach((r,i)=>{
+    const y=M.t+i*rowH, bh=rowH-10;
+    const w=Math.max(2,plotW*r.v/max);
+    const color=r.color||opt.color||C1;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:labelW,y:y,width:w,height:bh,fill:color,rx:4,ry:4}));
+    if(w>8) g.appendChild(el('rect',{x:labelW,y:y,width:Math.min(6,w),height:bh,fill:color}));
+    const lab=el('text',{x:labelW-pad,y:y+bh/2+4,'text-anchor':'end','font-size':13,fill:INK});
+    lab.textContent=r.k; g.appendChild(lab);
+    const val=el('text',{x:labelW+w+9,y:y+bh/2+4,'font-size':13,fill:INK,'font-weight':600});
+    val.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(val);
+    hook(g, r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const x=labelW+plotW*rf.v/max;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-14,y2:M.t+rows.length*rowH+2,
+      stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:x,y:M.t-19,'text-anchor':'middle','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- barres verticales ---------- */
+function barV(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||300, left=58, bottom=H-46, top=opt.top||26;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.15;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  const plotW=W-left-24, bw=Math.min(opt.bw||64, plotW/rows.length-16);
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max*(1-i/4);
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  rows.forEach((r,i)=>{
+    const cx=left+plotW*(i+.5)/rows.length, h=(bottom-top)*r.v/max;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-h,width:bw,height:h,fill:r.color||opt.color||C1,rx:4,ry:4}));
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-Math.min(6,h),width:bw,height:Math.min(6,h),fill:r.color||opt.color||C1}));
+    const v=el('text',{x:cx,y:bottom-h-8,'text-anchor':'middle','font-size':13,fill:INK,'font-weight':600});
+    v.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(v);
+    const l=el('text',{x:cx,y:bottom+19,'text-anchor':'middle','font-size':12.5,fill:INK});
+    l.textContent=r.k; g.appendChild(l);
+    if(r.k2){const l2=el('text',{x:cx,y:bottom+34,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+      l2.textContent=r.k2; g.appendChild(l2);}
+    hook(g,r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  svg.appendChild(el('line',{x1:left,x2:W-24,y1:bottom,y2:bottom,stroke:'#C9CDD4','stroke-width':1}));
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const y=bottom-(bottom-top)*rf.v/max;
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-26,y:y-7,'text-anchor':'end','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- lignes multi-séries ---------- */
+function lines(id,cats,series,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||320,left=62,right=24,top=30,bottom=H-46;
+  const all=series.flatMap(s=>s.v).concat(opt.extra||[]);
+  const max=opt.max||Math.max(...all)*1.10, min=opt.min!==undefined?opt.min:Math.min(...all)*0.88;
+  const X=i=>left+(W-left-right)*(cats.length===1?0.5:i/(cats.length-1));
+  const Y=v=>bottom-(bottom-top)*(v-min)/(max-min);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max-(max-min)*i/4;
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  if(opt.band){
+    svg.appendChild(el('rect',{x:left,y:Y(opt.band[1]),width:W-left-right,height:Math.abs(Y(opt.band[0])-Y(opt.band[1])),
+      fill:'#EFEFEA',opacity:.85}));
+    const t=el('text',{x:left+8,y:Y(opt.band[1])-6,'font-size':11.5,fill:MUTED});
+    t.textContent=opt.bandLabel||''; svg.appendChild(t);
+  }
+  cats.forEach((c,i)=>{
+    const t=el('text',{x:X(i),y:bottom+20,'text-anchor':'middle','font-size':12.5,fill:INK});
+    t.textContent=c; svg.appendChild(t);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:Y(rf.v),y2:Y(rf.v),stroke:rf.color||MUTED,
+      'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-right-2,y:Y(rf.v)-7,'text-anchor':'end','font-size':12,fill:rf.color||MUTED,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  series.forEach((s,si)=>{
+    const col=s.color||(si===0?C1:C2);
+    const d=s.v.map((v,i)=>(i?'L':'M')+X(i)+' '+Y(v)).join(' ');
+    svg.appendChild(el('path',{d:d,fill:'none',stroke:col,'stroke-width':2.5,'stroke-linejoin':'round'}));
+    s.v.forEach((v,i)=>{
+      svg.appendChild(el('circle',{cx:X(i),cy:Y(v),r:6.5,fill:'#FCFCFB',stroke:col,'stroke-width':2.5}));
+      const g=el('circle',{cx:X(i),cy:Y(v),r:15,fill:'transparent'});
+      hook(g,`<b>${cats[i]} — ${s.name}</b><br>${opt.tipFmt?opt.tipFmt(v,i,s):fmt(v)}`);
+      svg.appendChild(g);
+    });
+    const lastX=X(s.v.length-1), lastY=Y(s.v[s.v.length-1]);
+    let dy=-16;
+    for(let k=0;k<si;k++){
+      const oy=Y(series[k].v[series[k].v.length-1]);
+      if(Math.abs(oy-lastY)<24) dy = (lastY>=oy) ? 24 : -16;
+    }
+    const t=el('text',{x:lastX,y:lastY+dy,'text-anchor':'end','font-size':13,fill:col,'font-weight':700});
+    t.textContent=opt.labFmt?opt.labFmt(s.v[s.v.length-1]):fmt(s.v[s.v.length-1]); svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+window.__charts={barH,barV,lines,fmt};
+const K1='#1B4F91', K2='#E35205', GREY='#B9BEC7';
+const PAL=['#1B4F91','#E35205','#5B8FCB','#B4531F','#8E9AA8'];
+const YRS=['2022','2023','2024','2025','2026*'];
+
+/* 1. Le ciseau */
+(function(){
+  const s=D.serie.filter(x=>x.an!=='2026*'), b=s[0];
+  lines('k-ciseau', s.map(r=>r.an),
+    [{name:'Jours produits', v:s.map(r=>Math.round(1000*r.j/b.j)/10), color:K1},
+     {name:'Prix de journée', v:s.map(r=>Math.round(1000*r.tjm/b.tjm)/10), color:K2}],
+    {h:330, min:92, max:136, tickFmt:v=>Math.round(v),
+     labFmt:v=>String(v).replace('.',','),
+     tipFmt:(v,i,se)=>se.name==='Jours produits'
+       ? fmt(s[i].j)+' jours (base 100 = '+b.j+')'
+       : fmt(s[i].tjm)+' € par jour (base 100 = '+b.tjm+' €)'});
+})();
+document.getElementById('k-serie').innerHTML = D.serie.map(r=>
+  `<tr><td><strong>${r.an}</strong></td><td class="n">${fmt(r.ca)} €</td><td class="n">${fmt(r.j)}</td>
+   <td class="n"><strong>${fmt(r.tjm)} €</strong></td></tr>`).join('');
+
+/* 2. Secteurs */
+function multi(id, legendId, series, opt){
+  const host=document.getElementById(legendId);
+  if(host) host.innerHTML=series.map((s,i)=>`<span><i style="background:${PAL[i%PAL.length]}"></i>${s.nom}</span>`).join('');
+  lines(id, YRS, series.map((s,i)=>({name:s.nom, v:s.s.map(x=>x.tjm), color:PAL[i%PAL.length]})),
+    Object.assign({h:340, tickFmt:v=>Math.round(v)+' €', labFmt:v=>fmt(v)+' €',
+      tipFmt:(v,i,se)=>{const src=series.find(x=>x.nom===se.name); return fmt(v)+' € par jour — '+fmt(src.s[i].j)+' jours';}}, opt||{}));
+}
+multi('k-secteurs','k-sec-legend', D.secteurs, {min:480, max:1560});
+
+multi('k-coldetail','k-col-legend', D.collectDetail, {min:640, max:1520});
+
+/* 3. Clients */
+barV('k-eurogroup', D.eurogroup.map(r=>({k:r.an, k2:r.tjm+' €/j', v:r.j,
+  color: r.tjm<1000?K2:K1,
+  tip:`<b>${r.an}</b><br>${fmt(r.j)} jours (${r.partJ} % de nos jours)<br>${fmt(r.tjm)} € par jour`})),
+  {h:300, bw:62, valFmt:r=>fmt(r.v)+' j', tickFmt:v=>Math.round(v)+' j'});
+
+(function(){
+  const sel=D.clients.filter(c=>c.tot>=120 && c.s.every(x=>x!==null && x>0)).slice(0,5);
+  const host=document.getElementById('k-cli-legend');
+  host.innerHTML=sel.map((s,i)=>`<span><i style="background:${PAL[i%PAL.length]}"></i>${s.nom}</span>`).join('');
+  lines('k-clients', YRS, sel.map((c,i)=>({name:c.nom, v:c.s.map(x=>x===null?0:x), color:PAL[i%PAL.length]})),
+    {h:350, min:0, max:1450, tickFmt:v=>Math.round(v)+' €', labFmt:v=>v?fmt(v)+' €':'',
+     tipFmt:(v,i,se)=>{const c=sel.find(x=>x.nom===se.name); return v?fmt(v)+' € par jour — '+fmt(c.j[i])+' jours':'aucune activité';}});
+})();
+
+(function(){
+  const a=D.serie, b=D.horsEG;
+  lines('k-horseg', a.map(r=>r.an),
+    [{name:'Tout le portefeuille', v:a.map(r=>r.tjm), color:K1},
+     {name:'Hors EUROGROUP', v:b.map(r=>r.tjm), color:K2}],
+    {h:320, min:940, max:1290, tickFmt:v=>Math.round(v)+' €', labFmt:v=>fmt(v)+' €',
+     tipFmt:(v,i,se)=>{const src=se.name==='Hors EUROGROUP'?b:a; return fmt(v)+' € par jour — '+fmt(src[i].j)+' jours';}});
+})();
+
+/* 4. Canaux */
+multi('k-canaux','k-can-legend', D.canaux, {min:760, max:1420});
+
+/* 5. Consultants */
+barH('k-pj', D.pjConsultants.map(r=>({k:r.nom, v:r.pj, carnet:r.carnet,
+  color: r.pj<1000?K2:K1,
+  tip:`<b>${r.nom}</b><br>${fmt(r.pj)} € par jour<br>carnet août-déc. : ${String(r.carnet).replace('.',',')} jours`})),
+  {labelW:255, rowH:30, max:1600, valFmt:r=>fmt(r.v)+' €  ·  '+String(r.carnet).replace('.',',')+' j',
+   tickFmt:v=>Math.round(v)+' €',
+   refs:[{v:1012, label:'moyenne OPTA-S 2025 — 1 012 €', color:GREY}]});
+
+barV('k-charge', D.charge2026.map(r=>({k:r.m, v:r.t,
+  color: r.t<50?K2:K1, tip:`<b>${r.m} 2026</b><br>taux de charge ${r.t} %`})),
+  {h:280, bw:44, valFmt:r=>r.v+' %', tickFmt:v=>Math.round(v)+' %',
+   refs:[{v:60, label:'moyenne annuelle 60 %', color:GREY}]});
+
+/* 6. Groupe */
+(function(){
+  const g=D.groupe, e=g.entites;
+  const rows=[
+    ['CA 2026 — atterrissage', ...e.map(x=>fmt(x.att)+' k€'), fmt(g.caGroupe2026)+' k€'],
+    ['CA réel 2025', ...e.map(x=>fmt(x.reel)+' k€'), fmt(g.caGroupe2025)+' k€'],
+    ['Tendance vs 2025', ...e.map(x=>(x.evo>0?'+':'')+String(x.evo).replace('.',',')+' %'), String(g.tendance).replace('.',',')+' %'],
+    ['Taux de charge annuel', ...e.map(x=>x.charge?x.charge+' %':'—'), '—'],
+    ['Offres en cours', ...e.map(x=>fmt(x.pipe)+' k€'), fmt(g.pipeline)+' k€'],
+    ['CA vendu 2026', ...e.map(x=>fmt(x.vendu)+' k€'), fmt(g.vendu2026)+' k€']
+  ];
+  document.getElementById('k-groupe').innerHTML = rows.map(r=>
+    `<tr><td>${r[0]}</td>${r.slice(1).map((c,i)=>`<td class="n"${i===3?' style="font-weight:700"':''}>${c}</td>`).join('')}</tr>`).join('');
+})();
+
+/* Tableaux de données */
+function dataTable(hostId, series, nameKey){
+  const rows=series.map(s=>`<tr><td>${s.nom}</td>${s.s.map(x=>{
+    const t = (typeof x==='object') ? x.tjm : x;
+    const j = (typeof x==='object') ? x.j : null;
+    return `<td class="n">${t?fmt(t)+' €':'—'}${j!==null&&j?'<br><span style="color:#999;font-size:12px">'+fmt(j)+' j</span>':''}</td>`;
+  }).join('')}</tr>`).join('');
+  document.getElementById(hostId).innerHTML =
+    `<table><thead><tr><th>${nameKey}</th>${YRS.map(y=>'<th class="n">'+y+'</th>').join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+dataTable('k-t-secteurs', D.secteurs, 'Secteur');
+dataTable('k-t-canaux', D.canaux, 'Canal');
+dataTable('k-t-clients', D.clients.map(c=>({nom:c.nom, s:c.s.map((t,i)=>({tjm:t, j:c.j[i]}))})), 'Client');
+
+})();
+</script>
+</body>
+</html>

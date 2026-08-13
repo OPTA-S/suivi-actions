@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmark — comment croissent les cabinets de conseil et de formation, août 2026</title>
+<style>
+:root{
+  --marine:#002D69; --orange:#FF6600; --gris:#3C3C3C; --gris-clair:#999999;
+  --serie1:#1B4F91; --serie2:#E35205; --grid:#E6E8EC; --surface:#FCFCFB;
+  --encadre:#F4F5F7; --bleu-pale:#A4BBD8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--gris);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+.wrap{max-width:980px;margin:0 auto;padding:0 28px 90px}
+h1,h2,h3,h4,.nar{font-family:"Arial Narrow",Arial,sans-serif}
+header.hero{border-bottom:3px solid var(--orange);padding:46px 0 26px;margin-bottom:34px}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);font-weight:700;margin:0 0 10px}
+h1{font-size:40px;line-height:1.12;color:var(--marine);margin:0 0 12px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--gris-clair);font-size:15px;margin:0}
+h2{font-size:27px;color:var(--marine);margin:56px 0 6px;font-weight:700;letter-spacing:-.005em;
+   padding-top:22px;border-top:1px solid var(--grid)}
+h2 .num{color:var(--orange);font-size:15px;display:block;letter-spacing:.14em;margin-bottom:6px;text-transform:uppercase}
+h3{font-size:19px;color:var(--orange);margin:34px 0 8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+h4{font-size:16px;color:var(--marine);margin:24px 0 6px;font-weight:700}
+p{margin:0 0 15px}
+strong{color:var(--marine);font-weight:700}
+em.src{font-style:normal;color:var(--gris-clair);font-size:13px}
+a{color:var(--serie1)}
+.lede{font-size:18px;line-height:1.6;color:var(--gris)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin:26px 0 6px}
+.tile{border:1px solid var(--grid);border-left:3px solid var(--orange);padding:15px 16px;background:#fff;border-radius:3px}
+.tile .v{font-family:"Arial Narrow",Arial,sans-serif;font-size:30px;font-weight:700;color:var(--marine);line-height:1.05}
+.tile .l{font-size:12.5px;color:var(--gris-clair);margin-top:5px;line-height:1.35}
+.tile.warn{border-left-color:var(--serie2)}
+.tile.ok{border-left-color:var(--serie1)}
+figure{margin:26px 0 8px;border:1px solid var(--grid);background:#fff;border-radius:3px;padding:18px 18px 10px}
+figcaption{font-size:13px;color:var(--gris-clair);margin-top:10px;line-height:1.45;border-top:1px solid var(--grid);padding-top:9px}
+.figtitle{font-family:"Arial Narrow",Arial,sans-serif;font-size:17px;font-weight:700;color:var(--marine);margin:0 0 2px}
+.figsub{font-size:13px;color:var(--gris-clair);margin:0 0 14px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--gris);margin:0 0 12px}
+.legend i{width:11px;height:11px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
+.box{background:var(--encadre);border-left:3px solid var(--marine);padding:16px 20px;margin:24px 0;border-radius:0 3px 3px 0}
+.box.alert{border-left-color:var(--serie2);background:#FDF3EE}
+.box p:last-child{margin-bottom:0}
+.box .t{font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;color:var(--marine);font-size:15px;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:20px 0}
+th{text-align:left;font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;text-transform:uppercase;
+   letter-spacing:.05em;color:var(--marine);border-bottom:2px solid var(--marine);padding:8px 10px 7px}
+td{padding:8px 10px;border-bottom:1px solid var(--grid)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr:hover td{background:#FAFBFC}
+.tag{display:inline-block;font-size:11.5px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:.03em}
+.tag.up{background:#E8F0F9;color:var(--serie1)} .tag.down{background:#FBEAE2;color:var(--serie2)}
+.tag.flat{background:#F0F1F3;color:var(--gris-clair)}
+ol.axes{list-style:none;counter-reset:ax;padding:0;margin:26px 0}
+ol.axes>li{counter-increment:ax;position:relative;padding:18px 0 18px 62px;border-bottom:1px solid var(--grid)}
+ol.axes>li::before{content:counter(ax);position:absolute;left:0;top:16px;width:42px;height:42px;border-radius:50%;
+  background:var(--marine);color:#fff;font-family:"Arial Narrow",Arial,sans-serif;font-size:21px;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+ol.axes>li .ax-t{font-family:"Arial Narrow",Arial,sans-serif;font-size:20px;font-weight:700;color:var(--marine);margin-bottom:2px}
+ol.axes>li .ax-m{font-size:12.5px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.tip{position:fixed;pointer-events:none;background:var(--marine);color:#fff;font-size:12.5px;padding:7px 10px;
+  border-radius:3px;opacity:0;transition:opacity .12s;z-index:99;line-height:1.45;white-space:nowrap}
+details{margin:14px 0;border:1px solid var(--grid);border-radius:3px;background:#fff}
+summary{cursor:pointer;padding:11px 15px;font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;
+  color:var(--marine);font-size:15px;text-transform:uppercase;letter-spacing:.04em}
+details[open] summary{border-bottom:1px solid var(--grid)}
+details .in{padding:4px 15px 12px}
+footer{margin-top:60px;padding-top:22px;border-top:3px solid var(--orange);font-size:13px;color:var(--gris-clair)}
+@media(max-width:640px){h1{font-size:30px}h2{font-size:22px}.wrap{padding:0 16px 60px}}
+
+.codirnav{background:#002D69;position:sticky;top:0;z-index:50}
+.codirnav .in{max-width:1050px;margin:0 auto;padding:0 28px;display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+.codirnav a{font-family:"Arial Narrow",Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+  color:#A8BDD8;text-decoration:none;padding:11px 12px;font-weight:700;border-bottom:3px solid transparent}
+.codirnav a:hover{color:#fff}
+.codirnav a.home{color:#fff}
+.codirnav a.on{color:#fff;border-bottom-color:#FF6600}
+.codirnav a.suivi{margin-left:auto;color:#FF9B4D}
+.codirnav a.suivi:hover{color:#FF6600}
+@media(max-width:700px){.codirnav .in{padding:0 14px}.codirnav a{padding:9px 8px;font-size:12px}}
+</style>
+</head>
+<body>
+<nav class="codirnav"><div class="in"><a class="home" href="index.html">&#8962; CODIR</a><a href="diagnostic.html">Diagnostic</a><a href="prix-et-mix.html">Prix & mix</a><a href="produits.html">4 produits</a><a href="comcoop.html">ComCoop®</a><a href="benchmark.html" class="on">Benchmark</a><a class="suivi" href="codir.html">Suivi &#8599;</a></div></nav>
+<div class="tip" id="tip"></div>
+<div class="wrap">
+
+<header class="hero">
+<p class="kicker">Portail pilotage groupe · Benchmark</p>
+<h1>Comment font ceux<br>qui se développent</h1>
+<p class="sub">Excellens, Mensia, et quatre modèles de croissance documentés — août 2026<br>
+Sources publiées uniquement : comptes déposés, communiqués, jugements, études sectorielles.</p>
+</header>
+
+<p class="lede">Ce document répond à une question posée simplement : <strong>comment font les cabinets qui se
+développent ?</strong> Il s'appuie exclusivement sur des données publiées — comptes déposés, communiqués,
+jugements de tribunaux de commerce, études sectorielles. Chaque chiffre est sourcé. Les rares sources
+commerciales sont signalées <span style="color:#FF6600">[éditeur]</span>.</p>
+
+<div class="tiles">
+  <div class="tile warn"><div class="v">833 €</div><div class="l">prix moyen du jour chez Excellens Formation en 2024 — inférieur au nôtre</div></div>
+  <div class="tile ok"><div class="v">8,7 %</div><div class="l">de résultat net d'Excellens à ce prix-là, grâce à 150 formateurs externes</div></div>
+  <div class="tile warn"><div class="v">−438 k€</div><div class="l">résultat net de Mensia Conseil en 2025, après trois exercices bénéficiaires</div></div>
+  <div class="tile"><div class="v">18,7 %</div><div class="l">du travail vendu par le secteur l'est en abonnement ou en services managés</div></div>
+  <div class="tile warn"><div class="v">68,9 %</div><div class="l">taux de facturation moyen du secteur, en baisse depuis trois ans</div></div>
+  <div class="tile ok"><div class="v">267 000</div><div class="l">praticiens certifiés Prosci — le modèle de licence, à l'échelle</div></div>
+</div>
+
+<div class="box alert">
+  <div class="t">Le résultat qui n'était pas attendu</div>
+  <p>Les deux concurrents que nous admirons le plus vont mal. <strong>Excellens Formation a perdu 57,9 % de son
+  chiffre d'affaires en 2025</strong>, premier exercice après son rachat par Takoma. <strong>Mensia Conseil a
+  perdu 438 k€ la même année</strong> et consommé 800 k€ de fonds propres en deux exercices. Ce n'est pas une
+  consolation : c'est une information. <strong>Les modèles à copier ne sont pas ceux de nos concurrents directs.</strong>
+  Ils sont ailleurs — chez Prosci, chez Insights, chez FranklinCovey — et ils ont un point commun que ni
+  Excellens ni Mensia n'ont : <strong>le chiffre d'affaires y cesse d'être proportionnel au nombre de jours vendus.</strong></p>
+</div>
+
+<h2><span class="num">Le décor</span>Ce que fait le marché, chiffres à l'appui</h2>
+
+<p>Avant de regarder qui gagne, il faut regarder ce qui se contracte. Quatre repères suffisent.</p>
+
+<table>
+  <thead><tr><th>Repère</th><th class="n">Valeur</th><th>Détail et source</th></tr></thead>
+  <tbody id="b-contexte"></tbody>
+</table>
+
+<p>Le quatrième est le plus dur à lire. Le conseil mondial croît de 6 %. Le segment
+<em>« HR, People &amp; Change »</em> — le nôtre — <strong>recule de 3 %</strong>. Nous ne sommes pas sur un
+marché plat, nous sommes sur un marché qui se rétracte pendant que le reste du conseil avance. Toute stratégie
+de croissance qui consiste à faire plus de la même chose se heurte à cela.</p>
+
+<h2><span class="num">Cas 1 et 2</span>Excellens et Mensia, regardés de près</h2>
+
+<p>Deux questions posées directement : comment Excellens gagne-t-il autant d'appels d'offres, et comment
+Mensia tient-il sur le conseil ? Les comptes déposés répondent aux deux.</p>
+
+<div id="b-cas"></div>
+
+<div class="box alert">
+  <div class="t">La conclusion la plus utile de tout ce document</div>
+  <p>Nous perdons 40 % de nos appels d'offres sur le prix face à des acteurs dont <strong>le coût marginal d'une
+  journée est un honoraire de vacataire</strong>. Nous portons des salaires. Le combat est perdu d'avance à
+  armes égales — et il l'est structurellement, pas conjoncturellement.</p>
+  <p>Il en découle une règle de sélection des appels d'offres, applicable dès maintenant :
+  <strong>ne répondre que là où le critère prix pèse 40 % ou moins</strong>, ou là où la valeur technique
+  est jugée sur des éléments qu'un courtier de formateurs ne peut pas produire — une méthode propriétaire
+  nommée, un référentiel documenté, un dispositif certifiant, une capacité d'ingénierie mesurable.
+  Partout ailleurs, répondre coûte plus cher que de ne pas répondre.</p>
+</div>
+
+<h2><span class="num">Quatre modèles</span>Ce que font ceux qui croissent vraiment</h2>
+
+<p>Quatre modèles de croissance sont documentés dans le secteur. Ils ne s'excluent pas, mais ils n'exigent pas
+la même chose, et trois d'entre eux exigent quelque chose que nous n'avons pas encore.</p>
+
+<div id="b-modeles"></div>
+
+<figure>
+  <p class="figtitle">Nos propres segments, classés par taux de succès</p>
+  <p class="figsub">Taux de succès en appel d'offres, et prix de journée constaté en 2026.</p>
+  <div id="b-segments"></div>
+  <figcaption>La spécialisation verticale ne demande pas d'étude de marché : nos propres résultats désignent
+  les segments. Le privé, la MSA et la Sécurité sociale se gagnent à plus de 84 % et se vendent 300 à 550 €
+  plus cher le jour que les collectivités locales, où nous ne gagnons qu'une affaire sur deux au prix le plus bas.
+  <strong>Le seul obstacle à la spécialisation est de renoncer à des marchés.</strong> Il est culturel, pas économique.</figcaption>
+</figure>
+
+<h2><span class="num">Ceux qui meurent</span>La consolidation par le bas</h2>
+
+<p>Le marché ne se consolide pas par la croissance : il se consolide par la défaillance. Les faits sont publics.</p>
+
+<table>
+  <thead><tr><th style="width:24%">Acteur</th><th>Ce qui s'est passé</th></tr></thead>
+  <tbody id="b-meurent"></tbody>
+</table>
+
+<div class="box">
+  <div class="t">Ce que le prix de 250 000 € pour 90 M€ de chiffre d'affaires signifie vraiment</div>
+  <p>Sept entités du Collège de Paris, environ 90 M€ de chiffre d'affaires cumulé, reprises pour
+  <strong>250 000 €</strong> dans le plan de cession du 02/06/2026. Ce n'est pas une bonne affaire : c'est le
+  prix d'un passif. En plan de cession (<em>articles L642-1 et L642-12 du code de commerce</em>), le repreneur
+  choisit les contrats qu'il reprend et laisse le passif dans la procédure — mais il reprend les contrats de
+  travail attachés à l'activité et s'engage sur un plan social qu'il devra tenir.</p>
+  <p><strong>La bonne affaire n'est pas l'entreprise, ce sont les actifs isolés :</strong> un catalogue de
+  contenus, une marque, un portefeuille de clients référencés sur accord-cadre, une certification Qualiopi
+  avec son historique. Ces éléments se cèdent séparément et se paient quelques dizaines de milliers d'euros.
+  C'est le seul angle d'acquisition qui a du sens à notre taille.</p>
+</div>
+
+<h2><span class="num">L'IA</span>Ce que les grands déclarent, et ce qu'ils ne déclarent pas</h2>
+
+<table>
+  <thead><tr><th style="width:20%">Cabinet</th><th class="n">Part</th><th>Détail</th></tr></thead>
+  <tbody id="b-ia"></tbody>
+</table>
+
+<p>Trois choses sont vraies simultanément. <strong>La demande est massive et déclarée</strong> — Accenture
+annonce 5,9 Md$ de prises de commandes IA générative sur un exercice. <strong>Aucun de ces acteurs ne publie
+un prix</strong> : ni prix jour, ni prix au forfait, ni évolution. Et <strong>la seule affirmation sur un
+changement de modèle de facturation — les 25 % d'honoraires aux résultats attribués à McKinsey — n'a jamais
+été publiée par McKinsey</strong> ; elle circule par voie de presse.</p>
+
+<p>La lecture honnête est donc celle-ci : l'IA ouvre une fenêtre de prix, elle ne crée pas encore un modèle
+de facturation nouveau et documenté. <strong>Vendre l'IA au jour à prix fort est la seule chose que le marché
+valide aujourd'hui.</strong> Tout le reste — facturation à la valeur, licence de cas d'usage, revenus
+récurrents sur des agents — est un pari, pas un modèle prouvé. Il faut le prendre en connaissance de cause,
+et le prendre vite, parce que la rareté qui porte le prix se referme.</p>
+
+<h2><span class="num">À l'étranger</span>Ce qui se transpose et ce qui ne se transpose pas</h2>
+
+<p>Trois mécanismes étrangers reviennent systématiquement chez les acteurs qui ont découplé leur chiffre
+d'affaires de leur effectif. Aucun n'est spécifiquement anglo-saxon ; tous supposent une décision que nous
+n'avons pas encore prise.</p>
+
+<p><strong>La certification payante des praticiens du client.</strong> Prosci a certifié 267 000 personnes dans
+plus de 80 pays à 4 500 $ l'unité en ligne, abonnement d'un an à trois plateformes inclus. Insights Discovery
+a 35 000 praticiens dans 52 pays. Le cabinet ne délivre plus la formation : il délivre le droit de la délivrer,
+et il vend le matériel à chaque passage. <strong>C'est exactement le montage possible avec ComCoop®</strong> —
+la méthode, les outils nommés, le Check Qualité et les Fiches Techniques existent déjà.</p>
+
+<p><strong>La recertification et la monétisation de l'outil, pas de la formation.</strong> Gallup a atteint
+30 millions de passations CliftonStrengths et rend la recertification gratuite : la marge est sur les codes
+d'évaluation, pas sur le parcours. C'est un renversement complet — la formation devient le coût d'acquisition,
+l'outil devient le produit.</p>
+
+<p><strong>Les paliers de partenariat.</strong> Scaled Agile organise plus de 400 organisations partenaires
+en niveaux, dont le plus élevé exige 100 formateurs certifiés et 1 000 praticiens internes. Le palier crée
+l'engagement du partenaire sans créer de franchise : le partenaire investit pour monter, il ne peut plus partir.</p>
+
+<div class="box alert">
+  <div class="t">Ce qui ne se transpose pas — et pourquoi il faut le dire</div>
+  <p><strong>Le build-up adossé à un fonds.</strong> Julhiet Sterwen est passé de 50 à 100 M€ en quatre ans avec
+  Argos Wityu au capital. Takoma a racheté Excellens avec UI Investissement et Esfin. Ces montages exigent une
+  marge capable de porter la dette d'acquisition — et le cas Excellens montre ce qui arrive quand la marge de
+  la cible ne survit pas à l'intégration : <strong>−57,9 % de chiffre d'affaires la première année</strong>.
+  On n'achète pas avant d'avoir prouvé sa propre marge.</p>
+  <p><strong>L'abonnement pur.</strong> FranklinCovey y est arrivé — 84,6 % du CA en abonnement, 76,2 % de marge
+  brute — mais son chiffre d'affaires total a baissé de 287 à 267 M$ pendant la bascule. En commande publique
+  française, l'engagement pluriannuel se heurte de surcroît à l'annualité budgétaire.
+  <strong>La version transposable est le retainer d'accès</strong>, pas l'abonnement illimité.</p>
+</div>
+
+<h2><span class="num">Synthèse</span>Ce que ce benchmark impose de décider</h2>
+
+<p><strong>1. Cesser de concourir sur le prix contre des courtiers.</strong> C'est une décision de sélection
+d'appels d'offres, pas une décision tarifaire. Elle est applicable la semaine prochaine et elle est gratuite.</p>
+
+<p><strong>2. Traiter ComCoop® comme le seul actif capable de découpler le CA de l'effectif.</strong> Les trois
+mécanismes étrangers documentés — certification payante, monétisation de l'outil, paliers de partenariat —
+sont tous constructibles dessus. Aucun n'exige de franchise.</p>
+
+<p><strong>3. Se spécialiser sur les segments que nos propres taux de succès désignent</strong>, en retenant
+la leçon de Mensia : préférer les segments dont la dépense est obligée — réglementaire, protection sociale,
+réorganisation — à ceux dont la dépense est discrétionnaire.</p>
+
+<p><strong>4. Vendre l'IA au jour, à prix fort, tout de suite</strong>, sans attendre un modèle de facturation
+que personne n'a encore prouvé.</p>
+
+<p><strong>5. Ne pas acheter d'entreprise. Acheter des actifs.</strong> Catalogues, marques, référencements
+sur accord-cadre. La consolidation par le bas rend ces actifs disponibles à des prix qui n'ont plus de rapport
+avec leur valeur d'usage.</p>
+
+<h2><span class="num">Honnêteté</span>Ce que ce benchmark ne prouve pas</h2>
+
+<p><strong>Les taux de succès par segment sont calculés sur nos propres dossiers</strong>, dont 50 des 59 pertes
+formalisées n'ont aucune cause enregistrée. Le classement des segments est robuste ; l'attribution des pertes
+au prix repose sur les motifs recueillis manuellement, pas sur une donnée système.</p>
+
+<p><strong>La chute de 57,9 % du chiffre d'affaires d'Excellens en 2025 est lue au premier degré.</strong>
+Elle peut aussi résulter d'un transfert d'activité intra-groupe ou d'un changement d'exercice après le rachat
+de février 2025. Les comptes déposés ne permettent pas de trancher. Ce qui est certain, c'est que
+<strong>l'entité rachetée n'a pas conservé son volume</strong> — ce qui suffit à la conclusion tirée.</p>
+
+<p><strong>L'étude Hinge est un document de marketing.</strong> Elle est citée parce qu'elle porte sur 770
+cabinets et 87 Md$, pas parce qu'elle est indépendante : elle est produite par un cabinet de marketing dont
+le rapport complet est payant. Ses conclusions vont dans le sens de ce qu'il vend.</p>
+
+<p><strong>Aucun prix de licence ni de certification n'a été testé sur un acheteur public français.</strong>
+Prosci facture 4 500 $ à des entreprises anglo-saxonnes. La transposition du montant à une collectivité ou
+à une caisse française est une hypothèse, et elle sera vérifiée par le premier devis, pas par une étude.</p>
+
+
+<footer>OPTA-S — Benchmark de croissance, 12 août 2026. Sources publiées : comptes déposés (Pappers, societe.com), communiqués UI Investissement et Takoma, SPI Research 2025, Altares, Synofdes, rapports annuels FranklinCovey et Accenture, jugements des tribunaux de commerce de Nanterre et Paris. Les données internes proviennent d'Odoo (is.activite) et du portail de pilotage du groupe.</footer>
+</div>
+<script>
+/* Benchmark — comment croissent les cabinets de conseil et formation. 12/08/2026.
+   Toutes les données sont publiées et sourcées ; les mentions [éditeur] signalent du marketing. */
+const D = {
+  contexte: [
+    { nom:"Taux de facturation moyen du secteur", v:"68,9 %", det:"contre 73,2 % en 2021 — 3 années de baisse. SPI Research 2025, 403 cabinets, >150 000 consultants" },
+    { nom:"Cabinets de 10 à 30 salariés", v:"65,4 %", det:"taux d'utilisation ; croissance 6,6 %. OPTA-S est à 60 %" },
+    { nom:"Abonnement + services managés", v:"18,7 %", det:"du travail vendu (10,9 % managés + 7,8 % abonnement) : le basculement est réel mais minoritaire" },
+    { nom:"Segment « HR, People & Change »", v:"−3 %", det:"14 Md$ en 2024, quand le conseil mondial croît de +6 % à 263 Md$. Source Global Research, 24/09/2024" }
+  ],
+  modeles: [
+    {
+      id:"buildup", nom:"Le build-up adossé à un fonds", verdict:"Non transposable en l'état",
+      quoi:"On lève, on achète, on intègre. La croissance vient de l'acquisition, pas du carnet.",
+      preuves:[
+        "Julhiet Sterwen : 50 → 100 M€ de CA en 4 ans, 300 → 600 collaborateurs, soutenu par Argos Wityu, acquisition de M618 Consulting",
+        "Groupe Takoma : LBO UI Investissement + Esfin en janvier 2023, rachat d'Excellens Formation en février 2025, ~30 M€ de CA"
+      ],
+      exige:"Un fonds au capital, une équipe d'intégration, et une marge suffisante pour porter la dette.",
+      pourNous:"Le pipeline d'acquisition est déjà constitué. Mais on n'achète pas avant d'avoir prouvé sa propre marge : dupliquer un modèle dont le prix jour dérive, c'est acheter le problème en double."
+    },
+    {
+      id:"abo", nom:"L'abonnement", verdict:"Transposable — en acceptant deux exercices de creux",
+      quoi:"On vend un accès annuel plutôt que des missions. Le revenu devient prévisible et différé.",
+      preuves:[
+        "FranklinCovey, exercice 2025 : 84,6 % du CA en abonnement (80,7 % en 2024), marge brute 76,2 %, revenu différé 111,7 M$, 57 % des contrats All Access Pass signés sur 2 ans ou plus",
+        "⚠️ Sur le même exercice, le CA total a BAISSÉ de 287,2 à 267,1 M$"
+      ],
+      exige:"Un catalogue assez large pour qu'un accès illimité ait de la valeur, une plateforme, et un pilotage par la rétention.",
+      pourNous:"En version « retainer d'accès » : forfait annuel donnant droit à un volume d'interventions, aux outils, à une hotline et à la veille réglementaire. C'est le vecteur le plus réaliste pour une caisse ou une collectivité qui achète déjà en récurrent."
+    },
+    {
+      id:"licence", nom:"La licence de méthode", verdict:"Le seul modèle qui découple le CA de l'effectif",
+      quoi:"On cesse de délivrer. On vend le droit d'utiliser la méthode : certification, matériel, abonnement aux outils.",
+      preuves:[
+        "Prosci / ADKAR : certification 4 500 $ en ligne (4 850 $ en présentiel), abonnement d'un an à 3 plateformes inclus, plus de 267 000 praticiens certifiés dans 80+ pays",
+        "Insights Discovery : 35 000 praticiens, 52 pays, 3 500 organisations clientes",
+        "Gallup CliftonStrengths : 30 millions de passations atteintes le 08/05/2023 — recertification gratuite, monétisation sur les codes d'évaluation",
+        "Scaled Agile (SAFe) : 400+ organisations partenaires, avec paliers (le tier haut exige 100 SPC et 1 000 praticiens internes)"
+      ],
+      exige:"Une méthode nommable et différenciante, une marque déposée, un corpus industrialisé, un contrôle qualité du réseau — et renoncer à délivrer soi-même une partie des missions.",
+      pourNous:"ComCoop® a déjà la méthode, les outils nommés, le Check Qualité et les Fiches Techniques V8. Il manque la marque et le manuel opératoire. C'est le chantier ouvert."
+    },
+    {
+      id:"vertical", nom:"La spécialisation verticale", verdict:"Transposable immédiatement, à coût nul",
+      quoi:"On renonce à être généraliste. On choisit trois à cinq segments étroits et on le déclare.",
+      preuves:[
+        "Mensia Conseil : SAS de 1986, 20-49 salariés, capital détenu par le management, cinq pôles sectoriels étroits (infrastructures, mobilités, aménagement, cohésion sociale, performance publique), tickets de 35 k€ à 4,9 M€",
+        "[éditeur] Hinge Research Institute, High Growth Study 2025 (770 cabinets, 87 Md$ cumulés) : les cabinets à forte croissance croissent 4× plus vite et sont 30 % plus rentables, et se déclarent majoritairement spécialistes — étude d'un cabinet de marketing, résumé gratuit, rapport payant"
+      ],
+      exige:"Renoncer à des marchés. C'est la seule difficulté, et elle est culturelle.",
+      pourNous:"Nos taux de succès désignent déjà les segments : privé 86 % à 1 458 €/j, MSA 86 %, Sécurité sociale 84 % à 1 309 €/j — contre 53 % en valeur sur les collectivités."
+    }
+  ],
+  cas: [
+    {
+      id:"excellens", nom:"Excellens Formation", sous:"5 M€ de CA, 23 salariés, 6 000 jours facturés",
+      chiffres:[
+        ["CA 2024","5 000 000 €","communiqué UI Investissement, 13/02/2025"],
+        ["Jours facturés 2024","6 000 j","idem"],
+        ["Prix moyen implicite","833 €/j","5 000 000 ÷ 6 000 — INFÉRIEUR aux 1 012 € d'OPTA-S"],
+        ["Résultat net 2024","436 000 €","soit 8,7 % du CA — comptes déposés"],
+        ["Salariés","23",""],
+        ["Formateurs externes","150","soit 40 jours par formateur et par an"],
+        ["Mix clients","60 / 20 / 20","60 % État · 20 % hospitalier · 20 % territorial"],
+        ["CA 2025","2 340 000 €","−57,9 % — premier exercice sous Takoma ; résultat net 171 k€"]
+      ],
+      lecon:"Excellens ne gagne pas parce qu'il répond mieux. Il gagne parce que son coût marginal d'une journée est un honoraire de vacataire, pas un salaire chargé. Vingt-trois salariés ne produisent pas six mille jours : ils vendent, ils ingénierisent, ils pilotent la qualité — la production est achetée à 150 intervenants externes. Une structure de coûts variable peut descendre à 833 € le jour et rester à 8,7 % de résultat net. Une structure de coûts fixe ne le peut pas.",
+      consequence:"Sur un marché où le prix décide, nous ne battrons jamais ce modèle. Les 40 % d'appels d'offres perdus sur le prix ne sont pas un problème de grille tarifaire : c'est un problème de terrain de jeu. La réponse n'est pas de baisser, c'est de sortir des marchés où le critère prix pèse assez pour qu'un courtier gagne."
+    },
+    {
+      id:"mensia", nom:"Mensia Conseil", sous:"SAS de 1986, 20-49 salariés, capital détenu par le management",
+      chiffres:[
+        ["Résultat net 2022","+246 000 €",""],
+        ["Résultat net 2023","+360 000 €",""],
+        ["Résultat net 2024","+320 000 €",""],
+        ["Résultat net 2025","−438 000 €","capitaux propres 2,84 → 2,04 M€ en deux exercices"],
+        ["Pôles sectoriels","5","infrastructures, mobilités, aménagement, cohésion sociale, performance publique"],
+        ["Tickets observés","35 k€ à 4,9 M€",""]
+      ],
+      lecon:"Mensia est le contre-exemple utile. Le modèle est le bon — spécialisation verticale étroite, capital au management, pas de dette d'acquisition — et il a produit trois exercices bénéficiaires. Puis 2025 : −438 k€, et 800 k€ de capitaux propres consommés. La spécialisation protège de la banalisation, pas du cycle. Quand la commande publique se contracte, un cabinet spécialisé encaisse le choc en plein.",
+      consequence:"Se spécialiser ne suffit pas : il faut se spécialiser sur des segments dont la dépense est contra-cyclique ou obligée. La formation réglementaire, la protection sociale et l'accompagnement de réorganisation ont cette propriété. Le conseil en stratégie territoriale ne l'a pas."
+    }
+  ],
+  meurent: [
+    { nom:"Demos", fait:"Redressement judiciaire le 20/11/2025, TAE de Nanterre. Cessation des paiements fixée au 21/05/2024 — 18 mois d'antériorité. L'actionnaire Weidong aurait sorti les actifs rentables début 2025." },
+    { nom:"Collège de Paris / Comundi", fait:"Sauvegarde le 15/12/2025, conversion en redressement le 16/03/2026, plan de cession arrêté le 02/06/2026. Sept entités (~90 M€ de CA) reprises par Unify Group pour 250 000 €." },
+    { nom:"Comundi seule", fait:"CA 9,64 M€ en 2024, perte nette −1,09 M€. Valorisée 49 000 € dans le tableau d'actifs repris." },
+    { nom:"Le secteur", fait:"313 défaillances dans l'enseignement au T1 2026 (+17,2 %), dont 205 liquidations directes (Altares). Baromètre Synofdes : 56 % des organismes réduisent leur activité, 9 % au bord du dépôt de bilan." }
+  ],
+  ia: [
+    { nom:"Bain", v:"~30 %", det:"de l'activité conseil en IA et tech-enabled, cible de 50 %" },
+    { nom:"BCG", v:"~20 % → 40 %", det:"du CA 2024, cible ~40 % en 2026 (Christoph Schweizer)" },
+    { nom:"Accenture", v:"5,9 Md$", det:"de prises de commandes IA générative sur l'exercice 2025 (CA 69,7 Md$, +7 %) — pas un mot sur le prix dans le communiqué" },
+    { nom:"McKinsey", v:"~25 %", det:"des honoraires liés aux résultats — ⚠️ propos relayés par la presse, JAMAIS publiés par McKinsey" }
+  ],
+  segments: [
+    { nom:"Autres secteurs (privé, associatif)", succes:86, pj:1458 },
+    { nom:"Mutualité sociale agricole", succes:86, pj:1166 },
+    { nom:"Sécurité sociale", succes:84, pj:1309 },
+    { nom:"Protection sociale", succes:72, pj:1072 },
+    { nom:"Collectivités locales", succes:53, pj:907 }
+  ]
+};
+
+</script>
+<script>
+(function(){
+const M={t:26,r:20,b:34,l:0}, C1='#1B4F91', C2='#E35205', GRID='#E6E8EC', INK='#3C3C3C', MUTED='#999999';
+const tip=document.getElementById('tip');
+const fmt=n=>n.toLocaleString('fr-FR');
+const el=(t,a={})=>{const e=document.createElementNS('http://www.w3.org/2000/svg',t);
+  for(const k in a)e.setAttribute(k,a[k]);return e;};
+function hook(node,html){
+  node.style.cursor='default';
+  node.addEventListener('mousemove',e=>{tip.innerHTML=html;tip.style.opacity=1;
+    let x=e.clientX+14,y=e.clientY-10;
+    if(x+tip.offsetWidth>window.innerWidth-8)x=e.clientX-tip.offsetWidth-14;
+    tip.style.left=x+'px';tip.style.top=y+'px';});
+  node.addEventListener('mouseleave',()=>{tip.style.opacity=0;});
+}
+function mount(id){const h=document.getElementById(id);if(!h)return null;return h;}
+
+/* ---------- barres horizontales ---------- */
+function barH(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900, rowH=opt.rowH||30, labelW=opt.labelW||250, pad=12;
+  const H=M.t+rows.length*rowH+M.b;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.02;
+  const plotW=W-labelW-90;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  // grille
+  const ticks=opt.ticks||4;
+  for(let i=0;i<=ticks;i++){
+    const v=max*i/ticks, x=labelW+plotW*i/ticks;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-8,y2:M.t+rows.length*rowH,stroke:GRID,'stroke-width':1}));
+    const tx=el('text',{x:x,y:M.t+rows.length*rowH+18,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+    tx.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(tx);
+  }
+  rows.forEach((r,i)=>{
+    const y=M.t+i*rowH, bh=rowH-10;
+    const w=Math.max(2,plotW*r.v/max);
+    const color=r.color||opt.color||C1;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:labelW,y:y,width:w,height:bh,fill:color,rx:4,ry:4}));
+    if(w>8) g.appendChild(el('rect',{x:labelW,y:y,width:Math.min(6,w),height:bh,fill:color}));
+    const lab=el('text',{x:labelW-pad,y:y+bh/2+4,'text-anchor':'end','font-size':13,fill:INK});
+    lab.textContent=r.k; g.appendChild(lab);
+    const val=el('text',{x:labelW+w+9,y:y+bh/2+4,'font-size':13,fill:INK,'font-weight':600});
+    val.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(val);
+    hook(g, r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const x=labelW+plotW*rf.v/max;
+    svg.appendChild(el('line',{x1:x,x2:x,y1:M.t-14,y2:M.t+rows.length*rowH+2,
+      stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:x,y:M.t-19,'text-anchor':'middle','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- barres verticales ---------- */
+function barV(id,rows,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||300, left=58, bottom=H-46, top=opt.top||26;
+  const max=opt.max||Math.max(...rows.map(r=>r.v))*1.15;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  const plotW=W-left-24, bw=Math.min(opt.bw||64, plotW/rows.length-16);
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max*(1-i/4);
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  rows.forEach((r,i)=>{
+    const cx=left+plotW*(i+.5)/rows.length, h=(bottom-top)*r.v/max;
+    const g=el('g',{});
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-h,width:bw,height:h,fill:r.color||opt.color||C1,rx:4,ry:4}));
+    g.appendChild(el('rect',{x:cx-bw/2,y:bottom-Math.min(6,h),width:bw,height:Math.min(6,h),fill:r.color||opt.color||C1}));
+    const v=el('text',{x:cx,y:bottom-h-8,'text-anchor':'middle','font-size':13,fill:INK,'font-weight':600});
+    v.textContent=opt.valFmt?opt.valFmt(r):fmt(r.v); g.appendChild(v);
+    const l=el('text',{x:cx,y:bottom+19,'text-anchor':'middle','font-size':12.5,fill:INK});
+    l.textContent=r.k; g.appendChild(l);
+    if(r.k2){const l2=el('text',{x:cx,y:bottom+34,'text-anchor':'middle','font-size':11.5,fill:MUTED});
+      l2.textContent=r.k2; g.appendChild(l2);}
+    hook(g,r.tip||`<b>${r.k}</b><br>${fmt(r.v)}`);
+    svg.appendChild(g);
+  });
+  svg.appendChild(el('line',{x1:left,x2:W-24,y1:bottom,y2:bottom,stroke:'#C9CDD4','stroke-width':1}));
+  if(opt.refs) opt.refs.forEach(rf=>{
+    const y=bottom-(bottom-top)*rf.v/max;
+    svg.appendChild(el('line',{x1:left,x2:W-24,y1:y,y2:y,stroke:rf.color||C2,'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-26,y:y-7,'text-anchor':'end','font-size':12,fill:rf.color||C2,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+
+/* ---------- lignes multi-séries ---------- */
+function lines(id,cats,series,opt={}){
+  const host=mount(id); if(!host)return;
+  const W=900,H=opt.h||320,left=62,right=24,top=30,bottom=H-46;
+  const all=series.flatMap(s=>s.v).concat(opt.extra||[]);
+  const max=opt.max||Math.max(...all)*1.10, min=opt.min!==undefined?opt.min:Math.min(...all)*0.88;
+  const X=i=>left+(W-left-right)*(cats.length===1?0.5:i/(cats.length-1));
+  const Y=v=>bottom-(bottom-top)*(v-min)/(max-min);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  for(let i=0;i<=4;i++){
+    const y=top+(bottom-top)*i/4, v=max-(max-min)*i/4;
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:y,y2:y,stroke:GRID,'stroke-width':1}));
+    const t=el('text',{x:left-10,y:y+4,'text-anchor':'end','font-size':11.5,fill:MUTED});
+    t.textContent=opt.tickFmt?opt.tickFmt(v):fmt(Math.round(v)); svg.appendChild(t);
+  }
+  if(opt.band){
+    svg.appendChild(el('rect',{x:left,y:Y(opt.band[1]),width:W-left-right,height:Math.abs(Y(opt.band[0])-Y(opt.band[1])),
+      fill:'#EFEFEA',opacity:.85}));
+    const t=el('text',{x:left+8,y:Y(opt.band[1])-6,'font-size':11.5,fill:MUTED});
+    t.textContent=opt.bandLabel||''; svg.appendChild(t);
+  }
+  cats.forEach((c,i)=>{
+    const t=el('text',{x:X(i),y:bottom+20,'text-anchor':'middle','font-size':12.5,fill:INK});
+    t.textContent=c; svg.appendChild(t);
+  });
+  if(opt.refs) opt.refs.forEach(rf=>{
+    svg.appendChild(el('line',{x1:left,x2:W-right,y1:Y(rf.v),y2:Y(rf.v),stroke:rf.color||MUTED,
+      'stroke-width':2,'stroke-dasharray':'5 4'}));
+    const t=el('text',{x:W-right-2,y:Y(rf.v)-7,'text-anchor':'end','font-size':12,fill:rf.color||MUTED,'font-weight':700});
+    t.textContent=rf.label; svg.appendChild(t);
+  });
+  series.forEach((s,si)=>{
+    const col=s.color||(si===0?C1:C2);
+    const d=s.v.map((v,i)=>(i?'L':'M')+X(i)+' '+Y(v)).join(' ');
+    svg.appendChild(el('path',{d:d,fill:'none',stroke:col,'stroke-width':2.5,'stroke-linejoin':'round'}));
+    s.v.forEach((v,i)=>{
+      svg.appendChild(el('circle',{cx:X(i),cy:Y(v),r:6.5,fill:'#FCFCFB',stroke:col,'stroke-width':2.5}));
+      const g=el('circle',{cx:X(i),cy:Y(v),r:15,fill:'transparent'});
+      hook(g,`<b>${cats[i]} — ${s.name}</b><br>${opt.tipFmt?opt.tipFmt(v,i,s):fmt(v)}`);
+      svg.appendChild(g);
+    });
+    const lastX=X(s.v.length-1), lastY=Y(s.v[s.v.length-1]);
+    let dy=-16;
+    for(let k=0;k<si;k++){
+      const oy=Y(series[k].v[series[k].v.length-1]);
+      if(Math.abs(oy-lastY)<24) dy = (lastY>=oy) ? 24 : -16;
+    }
+    const t=el('text',{x:lastX,y:lastY+dy,'text-anchor':'end','font-size':13,fill:col,'font-weight':700});
+    t.textContent=opt.labFmt?opt.labFmt(s.v[s.v.length-1]):fmt(s.v[s.v.length-1]); svg.appendChild(t);
+  });
+  host.appendChild(svg);
+}
+window.__charts={barH,barV,lines,fmt};
+const K1='#1B4F91', K2='#E35205', GREY='#B9BEC7';
+const eur=v=>fmt(Math.round(v))+' €';
+
+document.getElementById('b-contexte').innerHTML = D.contexte.map(c=>
+  `<tr><td><strong>${c.nom}</strong></td><td class="n" style="font-weight:700;font-size:16px">${c.v}</td>
+   <td style="font-size:13px;color:#666">${c.det}</td></tr>`).join('');
+
+document.getElementById('b-modeles').innerHTML = D.modeles.map((m,i)=>`
+  <div style="border:1px solid #E6E8EC;border-left:3px solid ${i===2?'#E35205':'#002D69'};background:#fff;border-radius:0 3px 3px 0;padding:20px 24px;margin:26px 0">
+    <p style="font-family:'Arial Narrow',Arial,sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#FF6600;font-weight:700;margin:0 0 4px">Modèle ${i+1}</p>
+    <p style="font-family:'Arial Narrow',Arial,sans-serif;font-size:24px;font-weight:700;color:#002D69;margin:0 0 2px">${m.nom}</p>
+    <p style="font-size:14px;color:${i===2?'#E35205':'#666'};font-weight:${i===2?'700':'400'};margin:0 0 14px">${m.verdict}</p>
+    <p style="margin:0 0 12px">${m.quoi}</p>
+    <p style="font-family:'Arial Narrow',Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#002D69;font-weight:700;margin:16px 0 6px">Ce qui est publié</p>
+    <ul style="margin:0 0 12px;padding-left:20px;font-size:14.5px">${m.preuves.map(p=>`<li style="margin-bottom:6px">${p}</li>`).join('')}</ul>
+    <p style="margin:0 0 8px"><strong>Ce que ça exige :</strong> ${m.exige}</p>
+    <p style="margin:0"><strong>Pour nous :</strong> ${m.pourNous}</p>
+  </div>`).join('');
+
+document.getElementById('b-meurent').innerHTML = D.meurent.map(m=>
+  `<tr><td><strong>${m.nom}</strong></td><td style="font-size:14px">${m.fait}</td></tr>`).join('');
+
+document.getElementById('b-ia').innerHTML = D.ia.map(m=>
+  `<tr><td><strong>${m.nom}</strong></td><td class="n" style="font-weight:700">${m.v}</td>
+   <td style="font-size:13px;color:#666">${m.det}</td></tr>`).join('');
+
+barH('b-segments', D.segments.map(s=>({k:s.nom, v:s.succes, pj:s.pj,
+  color: s.succes<70?K2:K1,
+  tip:`<b>${s.nom}</b><br>${s.succes} % de succès<br>${eur(s.pj)} par jour en 2026`})),
+  {labelW:270, rowH:32, max:100, valFmt:r=>r.v+' %  ·  '+eur(r.pj)+'/j', tickFmt:v=>Math.round(v)+' %'});
+
+/* Cas Excellens / Mensia */
+document.getElementById('b-cas').innerHTML = D.cas.map((c,i)=>`
+  <div style="border:1px solid #E6E8EC;border-left:3px solid ${i===0?'#E35205':'#002D69'};background:#fff;border-radius:0 3px 3px 0;padding:20px 24px;margin:26px 0">
+    <p style="font-family:'Arial Narrow',Arial,sans-serif;font-size:26px;font-weight:700;color:#002D69;margin:0 0 2px">${c.nom}</p>
+    <p style="font-size:14px;color:#666;margin:0 0 16px">${c.sous}</p>
+    <table style="margin:0 0 16px"><tbody>${c.chiffres.map(x=>
+      `<tr><td style="width:38%">${x[0]}</td><td class="n" style="width:22%;font-weight:700">${x[1]}</td>
+       <td style="font-size:13px;color:#666">${x[2]||''}</td></tr>`).join('')}</tbody></table>
+    <p style="font-family:'Arial Narrow',Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#FF6600;font-weight:700;margin:0 0 6px">Ce que ça dit</p>
+    <p style="margin:0 0 14px">${c.lecon}</p>
+    <div class="box"><div class="t">Conséquence pour nous</div><p>${c.consequence}</p></div>
+  </div>`).join('');
+
+})();
+</script>
+</body>
+</html>
